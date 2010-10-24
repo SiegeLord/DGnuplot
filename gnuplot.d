@@ -80,47 +80,37 @@ class CGNUPlot
 		return this;
 	}
 	
-	File GetDataFile(int idx)
-	{
-		auto tmp = Environment.get("TMPDIR", "/tmp/");
-		while(idx >= DataFiles.length)
-		{
-			auto data = new File(tmp ~ "celeme_gnuplot_" ~ to!(char[])(DataFiles.length) ~ ".tmp", File.WriteCreate);
-			data.seek(0);
-			DataFiles ~= data;
-		}
-		return DataFiles[idx];
-	}
-	
-	CGNUPlot Plot(double[] X, double[] Y, char[] label = "", bool add = true)
+	CGNUPlot Plot(double[] X, double[] Y, char[] label = "")
 	{
 		assert(X.length == Y.length, "Arrays must be of equal length to plot.");
-		if(!add)
-			DataFileIdx = 0;
-		auto data = GetDataFile(DataFileIdx);
 
-		auto output = new TextOutput(data);
+		if(Hold && PlotCommand.length != 0)
+		{
+			PlotCommand ~= ", ";
+		}
+		else
+		{
+			PlotCommand.length = 0;
+			PlotData.length = 0;
+		}
+
+		PlotCommand ~= `"-"`;
+		PlotCommand ~= ` title "` ~ label ~ `"`;
+		PlotCommand ~= " with " ~ Style;
+		if(PlotColor.length)
+			PlotCommand ~= ` lt rgb "` ~ PlotColor ~ `"`;
+		
 		foreach(ii, x; X)
 		{
 			auto y = Y[ii];
-			output.formatln("{}\t{}", x, y);
+			PlotData ~= Format("{}\t{}\n", x, y);
 		}
-		output.flush;
-			
-		char[] command = "";
-		command ~= add && HaveOtherPlots ? "replot" : "plot";
-		command ~= `"` ~ data.toString ~ `"`;
-		command ~= ` title "` ~ label ~ `"`;
-		command ~= " with " ~ Style;
-		if(PlotColor.length)
-			command ~= ` lt rgb "` ~ PlotColor ~ `"`;
+		PlotData ~= "e\n";
 		
-		HaveOtherPlots = add;
+		if(!Hold)
+			Flush();
 		
-		if(HaveOtherPlots)
-			DataFileIdx++;
-		
-		return opCall(command);
+		return this;
 	}
 	
 	void Wait()
@@ -138,10 +128,32 @@ class CGNUPlot
 		opCall("quit");
 	}
 	
+	void Flush()
+	{
+		opCall("plot " ~ PlotCommand);
+		opCall(PlotData);
+		
+		PlotCommand.length = 0;
+		PlotData.length = 0;
+	}
+	
+	void Hold(bool hold)
+	{
+		Holding = hold;
+		if(!Hold)
+			Flush();
+	}
+	
+	bool Hold()
+	{
+		return Holding;
+	}
+	
+	char[] PlotCommand;
+	char[] PlotData;
 	bool HaveOtherPlots = false;
 	char[] Style = "lines";
 	char[] PlotColor = "";
-	File[] DataFiles;
-	int DataFileIdx = 0;
+	bool Holding = false;
 	Process GNUPlot;
 }
