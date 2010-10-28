@@ -70,6 +70,11 @@ class CGNUPlot
 			return opCall("set yrange [*:*]");
 	}
 	
+	CGNUPlot Title(char[] title)
+	{
+		return opCall(`set title "` ~ title ~ `"`);
+	}
+	
 	/* Null argument resets color */
 	CGNUPlot Color(int[3] color)
 	{
