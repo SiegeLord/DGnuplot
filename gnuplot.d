@@ -7,6 +7,7 @@ import tango.util.Convert;
 import tango.io.device.File;
 import tango.sys.Environment;
 import tango.io.stream.Text;
+import tango.core.Array;
 
 import tango.text.convert.Format;
 
@@ -85,6 +86,15 @@ class CGNUPlot
 		return this;
 	}
 	
+	CGNUPlot Thickness(float thickness)
+	{
+		assert(thickness >= 0);
+		
+		PlotThickness = Format("{}", thickness);
+		
+		return this;
+	}
+	
 	CGNUPlot Plot(double[] X, double[] Y, char[] label = "")
 	{
 		assert(X.length == Y.length, "Arrays must be of equal length to plot.");
@@ -101,10 +111,13 @@ class CGNUPlot
 
 		PlotCommand ~= `"-"`;
 		PlotCommand ~= ` title "` ~ label ~ `"`;
-		PlotCommand ~= " with " ~ Style;
+		PlotCommand ~= " with " ~ PlotStyle;
 		if(PlotColor.length)
 			PlotCommand ~= ` lt rgb "` ~ PlotColor ~ `"`;
-		
+		PlotCommand ~= ` lw ` ~ PlotThickness;
+		if(StyleHasPoints && PlotPointType.length)
+			PlotCommand ~= ` pt ` ~ PlotPointType;
+				
 		foreach(ii, x; X)
 		{
 			auto y = Y[ii];
@@ -154,11 +167,28 @@ class CGNUPlot
 		return Holding;
 	}
 	
+	void Style(char[] style)
+	{
+		PlotStyle = style;
+		StyleHasPoints = PlotStyle.length != PlotStyle.find("points");
+	}
+	
+	void PointType(int type)
+	{
+		if(type < 0)
+			PlotPointType = "";
+		else
+			PlotPointType = Format("{}", type);
+	}
+	
 	char[] PlotCommand;
 	char[] PlotData;
 	bool HaveOtherPlots = false;
-	char[] Style = "lines";
+	char[] PlotStyle = "lines";
+	bool StyleHasPoints = false;
 	char[] PlotColor = "";
+	char[] PlotThickness = "1";
+	char[] PlotPointType = "0";
 	bool Holding = false;
 	Process GNUPlot;
 }
