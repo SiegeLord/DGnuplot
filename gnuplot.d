@@ -42,6 +42,7 @@ class C3DPlot : CGNUPlot
 	{
 		PlotStyle = "image";
 		PlotCommand = "splot";
+		View = null;
 	}
 
 	this(char[] term)
@@ -49,6 +50,27 @@ class C3DPlot : CGNUPlot
 		PlotStyle = "image";
 		PlotCommand = "splot";
 		super(term);
+		View = null;
+	}
+	
+	C3DPlot ZLabel(char[] label)
+	{
+		Command(`set zlabel "` ~ label ~ `"`);
+		return this;
+	}
+
+	/* Null argument is auto-scale */
+	C3DPlot ZRange(double[] range)
+	{
+		if(range !is null)
+		{
+			assert(range.length == 2);
+			Command(Format("set zrange [{}:{}]", range[0], range[1]));
+		}
+		else
+			Command("set zrange [*:*]");
+			
+		return this;
 	}
 
 	void View(double[] x_z_rot)
@@ -76,7 +98,7 @@ class C3DPlot : CGNUPlot
 		char[] args;
 		char[] plt_data;
 
-		args ~= `splot "-" matrix`;
+		args ~= `"-" matrix`;
 		args ~= ` title "` ~ label ~ `" with ` ~ PlotStyle;
 		args ~= "\n";
 
@@ -267,6 +289,11 @@ class CGNUPlot
 	void Quit()
 	{
 		Command("quit");
+	}
+	
+	void Refresh()
+	{
+		Command("refresh");
 	}
 
 	CGNUPlot XLabel(char[] label)
