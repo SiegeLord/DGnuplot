@@ -36,127 +36,119 @@ import tango.text.convert.Format;
 
 class C3DPlot : CGNUPlot
 {
+	alias CGNUPlot.Plot Plot;
+
 	this()
 	{
 		PlotStyle = "image";
+		PlotCommand = "splot";
 	}
-	
+
 	this(char[] term)
 	{
 		PlotStyle = "image";
+		PlotCommand = "splot";
 		super(term);
 	}
-	
+
 	void View(double[] x_z_rot)
 	{
 		if(x_z_rot is null)
-			opCall("set view map");
+			Command("set view map");
 		else
-			opCall("set view " ~ Format("{}, {}", x_z_rot[0], x_z_rot[1]));
+			Command("set view " ~ Format("{}, {}", x_z_rot[0], x_z_rot[1]));
 	}
-	
+
 	void Palette(char[] pal)
 	{
-		opCall("set palette " ~ pal);
+		Command("set palette " ~ pal);
 	}
-	
+
 	void Palette(int r_formula, int g_formula, int b_formula)
 	{
-		opCall("set palette rgbformulae" ~ Format("{} {} {}", r_formula, g_formula, b_formula));
+		Command("set palette rgbformulae" ~ Format("{} {} {}", r_formula, g_formula, b_formula));
 	}
-	
+
 	C3DPlot Plot(double[] data, size_t w, size_t h, char[] label = "")
 	{
 		assert(data.length == w * h, "Width and height don't match the size of the data array");
-		
-		char[] plot_command;
-		
-		plot_command ~= `splot "-" matrix`;
-		plot_command ~= ` title "` ~ label ~ `" with ` ~ PlotStyle;
-		plot_command ~= "\n";
-		
+
+		char[] args;
+		char[] plt_data;
+
+		args ~= `splot "-" matrix`;
+		args ~= ` title "` ~ label ~ `" with ` ~ PlotStyle;
+		args ~= "\n";
+
 		for(int y = 0; y < h; y++)
 		{
 			for(int x = 0; x < w; x++)
 			{
-				plot_command ~= Format("{} ", data[y * w + x]);
+				plt_data ~= Format("{} ", data[y * w + x]);
 			}
-			plot_command ~= "\n";
+			plt_data ~= "\n";
 		}
-		
-		plot_command ~= "e\n";
-		plot_command ~= "e\n";
-		
-		opCall(plot_command);
-		
+
+		plt_data ~= "e\n";
+		plt_data ~= "e\n";
+
+		Plot(args, plt_data);
+
 		return this;
 	}
 }
 
 class C2DPlot : CGNUPlot
 {
+	alias CGNUPlot.Plot Plot;
+
 	this()
 	{
 		PlotStyle = "lines";
+		PlotCommand = "plot";
 	}
-	
+
 	this(char[] term)
 	{
 		PlotStyle = "lines";
+		PlotCommand = "plot";
 		super(term);
 	}
-	
+
 	C2DPlot Plot(double[] X, double[] Y, char[] label = "")
 	{
 		assert(X.length == Y.length, "Arrays must be of equal length to plot.");
 
-		if(Hold && PlotCommand.length != 0)
-		{
-			PlotCommand ~= ", ";
-		}
-		else
-		{
-			PlotCommand.length = 0;
-			PlotData.length = 0;
-		}
+		char[] args;
+		char[] data;
 
-		PlotCommand ~= `"-"`;
-		PlotCommand ~= ` title "` ~ label ~ `"`;
-		PlotCommand ~= " with " ~ PlotStyle;
+		args ~= `"-"`;
+		args ~= ` title "` ~ label ~ `"`;
+		args ~= " with " ~ PlotStyle;
 		if(PlotColor.length)
-			PlotCommand ~= ` lt rgb "` ~ PlotColor ~ `"`;
-		PlotCommand ~= ` lw ` ~ PlotThickness;
+			args ~= ` lt rgb "` ~ PlotColor ~ `"`;
+		args ~= ` lw ` ~ PlotThickness;
 		if(StyleHasPoints && PlotPointType.length)
-			PlotCommand ~= ` pt ` ~ PlotPointType;
-				
+			args ~= ` pt ` ~ PlotPointType;
+
 		foreach(ii, x; X)
 		{
 			auto y = Y[ii];
-			PlotData ~= Format("{}\t{}\n", x, y);
+			data ~= Format("{}\t{}\n", x, y);
 		}
-		PlotData ~= "e\n";
-		
-		if(!Hold)
-			Flush();
-		
+		data ~= "e\n";
+
+		Plot(args, data);
+
 		return this;
 	}
-	
-	void Flush()
-	{
-		opCall("plot " ~ PlotCommand);
-		opCall(PlotData);
-		
-		PlotCommand.length = 0;
-		PlotData.length = 0;
-	}
-	
+
 	void Style(char[] style)
 	{
 		super.Style(style);
 		StyleHasPoints = PlotStyle.length != PlotStyle.find("points");
 	}
-	
+
 	void PointType(int type)
 	{
 		if(type < 0)
@@ -164,16 +156,16 @@ class C2DPlot : CGNUPlot
 		else
 			PlotPointType = Format("{}", type);
 	}
-	
+
 	C2DPlot Thickness(float thickness)
 	{
 		assert(thickness >= 0);
-		
+
 		PlotThickness = Format("{}", thickness);
-		
+
 		return this;
 	}
-	
+
 	/* Null argument resets color */
 	C2DPlot Color(int[3] color)
 	{
@@ -183,43 +175,30 @@ class C2DPlot : CGNUPlot
 			PlotColor = Format("#{:x2}{:x2}{:x2}", color[0], color[1], color[2]);
 		return this;
 	}
-	
-	void Hold(bool hold)
-	{
-		Holding = hold;
-		if(!Hold)
-			Flush();
-	}
-	
-	bool Hold()
-	{
-		return Holding;
-	}
-	
-private:	
-	char[] PlotCommand;
-	char[] PlotData;
+
+private:
 	bool StyleHasPoints = false;
 	char[] PlotThickness = "1";
 	char[] PlotPointType = "0";
 	char[] PlotColor = "";
-	bool Holding = false;
 }
 
 class CGNUPlot
 {
+	alias opCall Command;
+
 	this()
 	{
 		GNUPlot = new Process(true, "gnuplot -persist");
 		GNUPlot.execute();
 	}
-	
+
 	this(char[] term)
 	{
 		this();
-		opCall("set term " ~ term);
+		Command("set term " ~ term);
 	}
-	
+
 	CGNUPlot opCall(char[] command)
 	{
 		with(GNUPlot.stdin)
@@ -228,69 +207,117 @@ class CGNUPlot
 			write("\n");
 			flush();
 		}
-		
+
 		return this;
 	}
-	
+
+	CGNUPlot Plot(char[] args, char[] data = null)
+	{
+		if(Hold && PlotArgs.length != 0)
+		{
+			PlotArgs ~= ", ";
+		}
+		else
+		{
+			PlotArgs.length = 0;
+			PlotData.length = 0;
+		}
+
+		PlotArgs ~= args;
+		if(data !is null)
+			PlotData ~= data;
+
+		if(!Hold)
+			Flush();
+
+		return this;
+	}
+
+	void Flush()
+	{
+		Command(PlotCommand ~ " " ~ PlotArgs);
+		Command(PlotData);
+
+		PlotArgs.length = 0;
+		PlotData.length = 0;
+	}
+
+	void Hold(bool hold)
+	{
+		Holding = hold;
+		if(!Hold)
+			Flush();
+	}
+
+	bool Hold()
+	{
+		return Holding;
+	}
+
+	void Wait()
+	{
+		GNUPlot.wait();
+	}
+
+	void Stop()
+	{
+		GNUPlot.kill();
+	}
+
+	void Quit()
+	{
+		Command("quit");
+	}
+
 	CGNUPlot XLabel(char[] label)
 	{
-		return opCall(`set xlabel "` ~ label ~ `"`);
+		return Command(`set xlabel "` ~ label ~ `"`);
 	}
-	
+
 	CGNUPlot YLabel(char[] label)
 	{
-		return opCall(`set ylabel "` ~ label ~ `"`);
+		return Command(`set ylabel "` ~ label ~ `"`);
 	}
-	
+
 	/* Null argument is auto-scale */
 	CGNUPlot XRange(double[] range)
 	{
 		if(range !is null)
 		{
 			assert(range.length == 2);
-			return opCall(Format("set xrange [{}:{}]", range[0], range[1]));
+			return Command(Format("set xrange [{}:{}]", range[0], range[1]));
 		}
 		else
-			return opCall("set xrange [*:*]");
+			return Command("set xrange [*:*]");
 	}
-	
+
 	/* Null argument is auto-scale */
 	CGNUPlot YRange(double[] range)
 	{
 		if(range !is null)
 		{
 			assert(range.length == 2);
-			return opCall(Format("set yrange [{}:{}]", range[0], range[1]));
+			return Command(Format("set yrange [{}:{}]", range[0], range[1]));
 		}
 		else
-			return opCall("set yrange [*:*]");
+			return Command("set yrange [*:*]");
 	}
-	
+
 	CGNUPlot Title(char[] title)
 	{
-		return opCall(`set title "` ~ title ~ `"`);
+		return Command(`set title "` ~ title ~ `"`);
 	}
-	
+
 	void Style(char[] style)
 	{
 		PlotStyle = style;
 	}
-	
-	void Wait()
-	{
-		GNUPlot.wait();
-	}
-	
-	void Stop()
-	{
-		GNUPlot.kill();
-	}
-	
-	void Quit()
-	{
-		opCall("quit");
-	}
 private:
-	Process GNUPlot;
 	char[] PlotStyle = "lines";
+
+	bool Holding = false;
+	char[] PlotCommand = "plot";
+	char[] PlotArgs;
+	char[] PlotData;
+	Process GNUPlot;
 }
