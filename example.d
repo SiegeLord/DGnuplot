@@ -64,7 +64,7 @@ void main()
 		XRange = [-1, 1];
 		YRange = [-2, 2];
 		
-		Plot(`x*x*x title "cubic"`);
+		PlotRaw(`x*x*x title "cubic"`);
 		Command("set arrow from 0, 0 to 1, 1");
 		Refresh();
 	}

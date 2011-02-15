@@ -36,8 +36,6 @@ import tango.text.convert.Format;
 
 class C3DPlot : CGNUPlot
 {
-	alias CGNUPlot.Plot Plot;
-
 	this()
 	{
 		PlotStyle = "image";
@@ -91,7 +89,7 @@ class C3DPlot : CGNUPlot
 		Command("set palette rgbformulae" ~ Format("{} {} {}", r_formula, g_formula, b_formula));
 	}
 
-	C3DPlot Plot(double[] data, size_t w, size_t h, char[] label = "")
+	C3DPlot Plot(T)(T[] data, size_t w, size_t h, char[] label = "")
 	{
 		assert(data.length == w * h, "Width and height don't match the size of the data array");
 
@@ -114,7 +112,7 @@ class C3DPlot : CGNUPlot
 		plt_data ~= "e\n";
 		plt_data ~= "e\n";
 
-		Plot(args, plt_data);
+		PlotRaw(args, plt_data);
 
 		return this;
 	}
@@ -122,8 +120,6 @@ class C3DPlot : CGNUPlot
 
 class C2DPlot : CGNUPlot
 {
-	alias CGNUPlot.Plot Plot;
-
 	this()
 	{
 		PlotStyle = "lines";
@@ -137,7 +133,7 @@ class C2DPlot : CGNUPlot
 		super(term);
 	}
 
-	C2DPlot Plot(double[] X, double[] Y, char[] label = "")
+	C2DPlot Plot(T)(T[] X, T[] Y, char[] label = "")
 	{
 		assert(X.length == Y.length, "Arrays must be of equal length to plot.");
 
@@ -160,7 +156,7 @@ class C2DPlot : CGNUPlot
 		}
 		data ~= "e\n";
 
-		Plot(args, data);
+		PlotRaw(args, data);
 
 		return this;
 	}
@@ -233,7 +229,7 @@ class CGNUPlot
 		return this;
 	}
 
-	CGNUPlot Plot(char[] args, char[] data = null)
+	CGNUPlot PlotRaw(char[] args, char[] data = null)
 	{
 		if(Hold && PlotArgs.length != 0)
 		{
