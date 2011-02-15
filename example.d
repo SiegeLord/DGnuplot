@@ -5,9 +5,9 @@ import tango.math.Math;
 
 void main()
 {
-	auto X = new double[](100);
-	auto Y1 = new double[](100);
-	auto Y2 = new double[](100);
+	auto X = new double[](1000);
+	auto Y1 = new double[](1000);
+	auto Y2 = new double[](1000);
 	
 	foreach(ii, ref x; X)
 	{

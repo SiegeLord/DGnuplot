@@ -33,6 +33,41 @@ import tango.io.stream.Text;
 import tango.core.Array;
 
 import tango.text.convert.Format;
+import tango.text.convert.Layout;
+
+private struct STextSink(T)
+{
+	alias Sink opCatAssign;
+
+	uint Sink(T[] input)
+	{
+		auto len = input.length;
+		auto new_size = Size + len;
+
+		if(new_size > Data.length)
+			Reserve(new_size * 3 / 2);
+
+		Data[Size..new_size] = input[];
+
+		Size = new_size;
+
+		return len;
+	}
+
+	void Reserve(size_t amt)
+	{
+		if(amt > Data.length)
+			Data.length = amt;
+	}
+
+	T[] opSlice()
+	{
+		return Data[0..Size];
+	}
+
+	T[] Data;
+	size_t Size = 0;
+}
 
 class C3DPlot : CGNUPlot
 {
@@ -50,7 +85,7 @@ class C3DPlot : CGNUPlot
 		super(term);
 		View = null;
 	}
-	
+
 	C3DPlot ZLabel(char[] label)
 	{
 		Command(`set zlabel "` ~ label ~ `"`);
@@ -67,7 +102,7 @@ class C3DPlot : CGNUPlot
 		}
 		else
 			Command("set zrange [*:*]");
-			
+
 		return this;
 	}
 
@@ -93,26 +128,26 @@ class C3DPlot : CGNUPlot
 	{
 		assert(data.length == w * h, "Width and height don't match the size of the data array");
 
-		char[] args;
-		char[] plt_data;
+		ArgsSink.Size = 0;
+		DataSink.Size = 0;
+		DataSink.Reserve(w * h * 10);
 
-		args ~= `"-" matrix`;
-		args ~= ` title "` ~ label ~ `" with ` ~ PlotStyle;
-		args ~= "\n";
+		ArgsSink ~= `"-" matrix`;
+		ArgsSink ~= ` title "` ~ label ~ `" with ` ~ PlotStyle;
+		ArgsSink ~= "\n";
 
 		for(int y = 0; y < h; y++)
 		{
 			for(int x = 0; x < w; x++)
 			{
-				plt_data ~= Format("{} ", data[y * w + x]);
+				LayoutInst.convert(&DataSink.Sink, "{} ", data[y * w + x]);
 			}
-			plt_data ~= "\n";
+			DataSink ~= "\n";
 		}
 
-		plt_data ~= "e\n";
-		plt_data ~= "e\n";
+		DataSink ~= "e\ne\n";
 
-		PlotRaw(args, plt_data);
+		PlotRaw(ArgsSink[], DataSink[]);
 
 		return this;
 	}
@@ -137,26 +172,27 @@ class C2DPlot : CGNUPlot
 	{
 		assert(X.length == Y.length, "Arrays must be of equal length to plot.");
 
-		char[] args;
-		char[] data;
+		ArgsSink.Size = 0;
+		DataSink.Size = 0;
+		DataSink.Reserve(X.length * 10);
 
-		args ~= `"-"`;
-		args ~= ` title "` ~ label ~ `"`;
-		args ~= " with " ~ PlotStyle;
+		ArgsSink ~= `"-"`;
+		ArgsSink ~= ` title "` ~ label ~ `"`;
+		ArgsSink ~= " with " ~ PlotStyle;
 		if(PlotColor.length)
-			args ~= ` lt rgb "` ~ PlotColor ~ `"`;
-		args ~= ` lw ` ~ PlotThickness;
+			ArgsSink ~= ` lt rgb "` ~ PlotColor ~ `"`;
+		ArgsSink ~= ` lw ` ~ PlotThickness;
 		if(StyleHasPoints && PlotPointType.length)
-			args ~= ` pt ` ~ PlotPointType;
+			ArgsSink ~= ` pt ` ~ PlotPointType;
 
 		foreach(ii, x; X)
 		{
 			auto y = Y[ii];
-			data ~= Format("{}\t{}\n", x, y);
+			LayoutInst.convert(&DataSink.Sink, "{}\t{}\n", x, y);
 		}
-		data ~= "e\n";
+		DataSink ~= "e\n";
 
-		PlotRaw(args, data);
+		PlotRaw(ArgsSink[], DataSink[]);
 
 		return this;
 	}
@@ -209,6 +245,7 @@ class CGNUPlot
 	{
 		GNUPlot = new Process(true, "gnuplot -persist");
 		GNUPlot.execute();
+		LayoutInst = new typeof(LayoutInst)();
 	}
 
 	this(char[] term)
@@ -286,7 +323,7 @@ class CGNUPlot
 	{
 		Command("quit");
 	}
-	
+
 	void Refresh()
 	{
 		Command("refresh");
@@ -343,4 +380,7 @@ private:
 	char[] PlotArgs;
 	char[] PlotData;
 	Process GNUPlot;
+	STextSink!(char) ArgsSink;
+	STextSink!(char) DataSink;
+	Layout!(char) LayoutInst;
 }
