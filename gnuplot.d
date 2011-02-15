@@ -374,6 +374,16 @@ class CGNUPlot
 
 		return this;
 	}
+
+	CGNUPlot AspectRatio(double ratio)
+	{
+		return Command(Format("set size ratio {}", ratio));
+	}
+
+	CGNUPlot OutputFile(char[] filename)
+	{
+		return Command(Format(`set output "{}"`, filename));
+	}
 private:
 	char[] PlotStyle = "lines";
 
@@ -381,6 +391,7 @@ private:
 	char[] PlotCommand = "plot";
 	char[] PlotArgs;
 	char[] PlotData;
+
 	Process GNUPlot;
 	STextSink!(char) ArgsSink;
 	STextSink!(char) DataSink;

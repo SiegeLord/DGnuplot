@@ -39,6 +39,7 @@ void main()
 		
 		XLabel = "Abscissa";
 		YLabel = "Ordinate";
+		AspectRatio = 1;
 		
 		Style = "linespoints";
 		Thickness = 2;
