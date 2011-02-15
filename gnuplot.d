@@ -106,22 +106,28 @@ class C3DPlot : CGNUPlot
 		return this;
 	}
 
-	void View(double[] x_z_rot)
+	C3DPlot View(double[] x_z_rot)
 	{
 		if(x_z_rot is null)
 			Command("set view map");
 		else
 			Command("set view " ~ Format("{}, {}", x_z_rot[0], x_z_rot[1]));
+
+		return this;
 	}
 
-	void Palette(char[] pal)
+	C3DPlot Palette(char[] pal)
 	{
 		Command("set palette " ~ pal);
+
+		return this;
 	}
 
-	void Palette(int r_formula, int g_formula, int b_formula)
+	C3DPlot Palette(int r_formula, int g_formula, int b_formula)
 	{
 		Command("set palette rgbformulae" ~ Format("{} {} {}", r_formula, g_formula, b_formula));
+
+		return this;
 	}
 
 	C3DPlot Plot(T)(T[] data, size_t w, size_t h, char[] label = "")
@@ -197,18 +203,22 @@ class C2DPlot : CGNUPlot
 		return this;
 	}
 
-	void Style(char[] style)
+	C2DPlot Style(char[] style)
 	{
 		super.Style(style);
 		StyleHasPoints = PlotStyle.length != PlotStyle.find("points");
+
+		return this;
 	}
 
-	void PointType(int type)
+	C2DPlot PointType(int type)
 	{
 		if(type < 0)
 			PlotPointType = "";
 		else
 			PlotPointType = Format("{}", type);
+
+		return this;
 	}
 
 	C2DPlot Thickness(float thickness)
@@ -268,7 +278,7 @@ class CGNUPlot
 
 	CGNUPlot PlotRaw(char[] args, char[] data = null)
 	{
-		if(Hold && PlotArgs.length != 0)
+		if(Holding && PlotArgs.length != 0)
 		{
 			PlotArgs ~= ", ";
 		}
@@ -282,51 +292,41 @@ class CGNUPlot
 		if(data !is null)
 			PlotData ~= data;
 
-		if(!Hold)
+		if(!Holding)
 			Flush();
 
 		return this;
 	}
 
-	void Flush()
+	CGNUPlot Flush()
 	{
 		Command(PlotCommand ~ " " ~ PlotArgs);
 		Command(PlotData);
 
 		PlotArgs.length = 0;
 		PlotData.length = 0;
+
+		return this;
 	}
 
-	void Hold(bool hold)
+	CGNUPlot Hold(bool hold)
 	{
 		Holding = hold;
-		if(!Hold)
+		if(!Holding)
 			Flush();
-	}
 
-	bool Hold()
-	{
-		return Holding;
-	}
-
-	void Wait()
-	{
-		GNUPlot.wait();
-	}
-
-	void Stop()
-	{
-		GNUPlot.kill();
+		return this;
 	}
 
 	void Quit()
 	{
 		Command("quit");
+		GNUPlot.kill();
 	}
 
-	void Refresh()
+	CGNUPlot Refresh()
 	{
-		Command("refresh");
+		return Command("refresh");
 	}
 
 	CGNUPlot XLabel(char[] label)
@@ -368,9 +368,11 @@ class CGNUPlot
 		return Command(`set title "` ~ title ~ `"`);
 	}
 
-	void Style(char[] style)
+	CGNUPlot Style(char[] style)
 	{
 		PlotStyle = style;
+
+		return this;
 	}
 private:
 	char[] PlotStyle = "lines";
