@@ -25,15 +25,13 @@ module gnuplot;
 
 import tango.io.Stdout;
 import tango.sys.Process;
-import tango.util.Convert;
 
-import tango.io.device.File;
-import tango.sys.Environment;
-import tango.io.stream.Text;
 import tango.core.Array;
 
 import tango.text.convert.Format;
 import tango.text.convert.Layout;
+
+import tango.stdc.posix.poll;
 
 private struct STextSink(T)
 {
@@ -102,6 +100,16 @@ class C3DPlot : CGNUPlot
 		}
 		else
 			Command("set zrange [*:*]");
+
+		return this;
+	}
+
+	CGNUPlot ZLogScale(bool use_log = true, int base = 10)
+	{
+		if(use_log)
+			Command(Format("set logscale z {}", base));
+		else
+			Command("unset logscale z");
 
 		return this;
 	}
@@ -276,6 +284,25 @@ class CGNUPlot
 		return this;
 	}
 
+	char[] GetErrors(int timeout = 100)
+	{
+		char[] ret;
+
+		pollfd fd;
+		fd.fd = GNUPlot.stderr.fileHandle;
+		fd.events = POLLIN;
+
+		while(poll(&fd, 1, timeout) > 0)
+		{
+			char[1024] buf;
+			int len = GNUPlot.stderr.read(buf);
+			if(len > 0)
+				ret ~= buf[0..len];
+		}
+
+		return ret;
+	}
+
 	CGNUPlot PlotRaw(char[] args, char[] data = null)
 	{
 		if(Holding && PlotArgs.length != 0)
@@ -361,6 +388,22 @@ class CGNUPlot
 		}
 		else
 			return Command("set yrange [*:*]");
+	}
+
+	CGNUPlot XLogScale(bool use_log = true, int base = 10)
+	{
+		if(use_log)
+			return Command(Format("set logscale x {}", base));
+		else
+			return Command("unset logscale x");
+	}
+
+	CGNUPlot YLogScale(bool use_log = true, int base = 10)
+	{
+		if(use_log)
+			return Command(Format("set logscale y {}", base));
+		else
+			return Command("unset logscale y");
 	}
 
 	CGNUPlot Title(char[] title)
