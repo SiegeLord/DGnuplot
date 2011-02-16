@@ -255,10 +255,41 @@ private:
 	char[] PlotColor = "";
 }
 
+/**
+ * Base class for all plot types.
+ * 
+ * This class is not terribly useful on its own, although you can use it as a
+ * direct interface to gnuplot. It also contains functions that are relevant to
+ * all plot types. Note that most methods return a pointer to the instance, allowing
+ * for method chaining:
+ * 
+ * ---
+ * (new CGNUPlot()).Title("Test Plot").XRange([-1, 1]).YRange([-1, 1]).PlotRaw("x*x*x");
+ * ---
+ * 
+ * I prefer this syntax, however:
+ * 
+ * ---
+ * auto plot = new CGNUPlot();
+ * with(plot)
+ * {
+ *     Title = "Test Plot";
+ *     XRange = [-1, 1];
+ *     YRange = [-1, 1];
+ *     PlotRaw("x*x*x");
+ * }
+ * ---
+ */
 class CGNUPlot
 {
+	/**
+	 * See_Also: opCall
+	 */
 	alias opCall Command;
 
+	/**
+	 * Create a new plot instance using the default terminal.
+	 */
 	this()
 	{
 		GNUPlot = new Process(true, "gnuplot -persist");
@@ -266,12 +297,24 @@ class CGNUPlot
 		LayoutInst = new typeof(LayoutInst)();
 	}
 
+	/**
+	 * Create a new plot instance while specifying a different terminal type.
+	 * 
+	 * Parameters:
+	 *     term = Terminal name. Notable options include: x11, svg, png, pdfcairo, postscript
+	 */
 	this(char[] term)
 	{
 		this();
 		Command("set term " ~ term);
 	}
 
+	/**
+	 * Send a command directly to gnuplot.
+	 * 
+	 * Parameters:
+	 *     command = Command to send to gnuplot.
+	 */
 	CGNUPlot opCall(char[] command)
 	{
 		with(GNUPlot.stdin)
