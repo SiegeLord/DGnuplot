@@ -85,6 +85,7 @@ void main()
 	with(plot4)
 	{
 		Title = "Image plotting";
+		Palette(23,28,3);
 		Plot(matrix, 10, 10, "cos(x) * sin(y)");
 	}
 
@@ -92,7 +93,7 @@ void main()
 	auto plot5 = new C3DPlot;
 	with(plot5)
 	{
-		Title = "Image plotting";
+		Title = "Surface plotting";
 		Style = "pm3d";
 		View = [45, 45];
 		Plot(matrix, 10, 10, "cos(x) * sin(y)");

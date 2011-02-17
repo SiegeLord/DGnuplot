@@ -67,8 +67,15 @@ private struct STextSink(T)
 	size_t Size = 0;
 }
 
+/**
+ * A 3D data plotter.
+ */
 class C3DPlot : CGNUPlot
 {
+	/**
+	 * See_Also:
+	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
+	 */
 	this()
 	{
 		PlotStyle = "image";
@@ -76,6 +83,10 @@ class C3DPlot : CGNUPlot
 		View = null;
 	}
 
+	/**
+	 * See_Also:
+	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
+	 */
 	this(char[] term)
 	{
 		PlotStyle = "image";
@@ -143,6 +154,16 @@ class C3DPlot : CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Set the view direction.
+	 *
+	 * Parameters:
+	 *     x_z_rot - Rotation around the x and the z axes, in degrees. Pass $(DIL_KW null)
+	 *               to set the "map" view, suitable for image plots.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C3DPlot View(double[] x_z_rot)
 	{
 		if(x_z_rot is null)
@@ -153,6 +174,15 @@ class C3DPlot : CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Set the palette. This can be either "color" or "gray".
+	 *
+	 * Parameters:
+	 *     pal - Name of the palette.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C3DPlot Palette(char[] pal)
 	{
 		Command("set palette " ~ pal);
@@ -160,13 +190,35 @@ class C3DPlot : CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Set the palette using the RGB formulae. The default is 7, 5, 15. See the gnuplot
+	 * documentation or the internet for more options.
+	 *
+	 * Parameters:
+	 *     r_formula, g_formula, b_formula - Formula indexes.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C3DPlot Palette(int r_formula, int g_formula, int b_formula)
 	{
-		Command("set palette rgbformulae" ~ Format("{} {} {}", r_formula, g_formula, b_formula));
+		Command("set palette rgbformulae" ~ Format(" {},{},{}", r_formula, g_formula, b_formula));
 
 		return this;
 	}
 
+	/**
+	 * Plot a rectangular matrix of values.
+	 *
+	 * Parameters:
+	 *     data - Linear array to the data. Assumes row-major storage.
+	 *     w - Width of the array.
+	 *     h - Height of the array.
+	 *     label - Label text to use for this surface.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C3DPlot Plot(T)(T[] data, size_t w, size_t h, char[] label = "")
 	{
 		assert(data.length == w * h, "Width and height don't match the size of the data array");
@@ -275,7 +327,7 @@ class C2DPlot : CGNUPlot
 	}
 
 	/**
-	 * Sets the point type to use if plotting points. This differs from
+	 * Set the point type to use if plotting points. This differs from
 	 * terminal to terminal, so experiment to find something good.
 	 *
 	 * Parameters:
@@ -294,6 +346,15 @@ class C2DPlot : CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Set the thickness of points/lines for subsequent plot commands.
+	 *
+	 * Parameters:
+	 *     thickness - Thickness of the point/lines.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C2DPlot Thickness(float thickness)
 	{
 		assert(thickness >= 0);
@@ -304,10 +365,11 @@ class C2DPlot : CGNUPlot
 	}
 
 	/**
-	 * Set the aspect ratio of the plot. Only works with 2D plots (or image 3D plots).
+	 * Set the color of points/lines for subsequent plot commands.
 	 *
 	 * Parameters:
-	 *     ratio - Aspect ratio to use (height / width).
+	 *     color - Triplet of values specifying the red, green and blue components
+	 *             of the color. Each component ranges between 0 and 255.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
