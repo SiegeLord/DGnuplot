@@ -21,6 +21,29 @@ freely, subject to the following restrictions:
    distribution.
 */
 
+/**
+ * This is a simple gnuplot (http://www.gnuplot.info/) controller. The term controller
+ * in this context means that this code spawns a gnuplot process and controls it via
+ * pipes. Two syntaxes are supported by this code:
+ *
+ * ---
+ * (new CGNUPlot()).Title("Test Plot").XRange([-1, 1]).YRange([-1, 1]).PlotRaw("x*x*x");
+ * ---
+ *
+ * Or this syntax:
+ *
+ * ---
+ * auto plot = new CGNUPlot();
+ * with(plot)
+ * {
+ *     Title = "Test Plot";
+ *     XRange = [-1, 1];
+ *     YRange = [-1, 1];
+ *     PlotRaw("x*x*x");
+ * }
+ * ---
+ */
+
 module gnuplot;
 
 import tango.io.Stdout;
@@ -195,14 +218,14 @@ class C3DPlot : CGNUPlot
 	 * documentation or the internet for more options.
 	 *
 	 * Parameters:
-	 *     r_formula, g_formula, b_formula - Formula indexes.
+	 *     triplet - Formula indexes.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C3DPlot Palette(int r_formula, int g_formula, int b_formula)
+	C3DPlot Palette(int[3] triplet...)
 	{
-		Command("set palette rgbformulae" ~ Format(" {},{},{}", r_formula, g_formula, b_formula));
+		Command("set palette rgbformulae" ~ Format(" {},{},{}", triplet[0], triplet[1], triplet[2]));
 
 		return this;
 	}
@@ -374,7 +397,7 @@ class C2DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C2DPlot Color(int[3] color)
+	C2DPlot Color(int[3] color...)
 	{
 		if(color is null)
 			PlotColor = "";
@@ -395,25 +418,7 @@ private:
  *
  * This class is not terribly useful on its own, although you can use it as a
  * direct interface to gnuplot. It also contains functions that are relevant to
- * all plot types. Note that most methods return a pointer to the instance, allowing
- * for method chaining:
- *
- * ---
- * (new CGNUPlot()).Title("Test Plot").XRange([-1, 1]).YRange([-1, 1]).PlotRaw("x*x*x");
- * ---
- *
- * I prefer this syntax, however:
- *
- * ---
- * auto plot = new CGNUPlot();
- * with(plot)
- * {
- *     Title = "Test Plot";
- *     XRange = [-1, 1];
- *     YRange = [-1, 1];
- *     PlotRaw("x*x*x");
- * }
- * ---
+ * all plot types. 
  */
 class CGNUPlot
 {
