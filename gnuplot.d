@@ -84,13 +84,31 @@ class C3DPlot : CGNUPlot
 		View = null;
 	}
 
+	/**
+	 * Set the label for the Z axis.
+	 *
+	 * Parameters:
+	 *     label - Label text.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C3DPlot ZLabel(char[] label)
 	{
 		Command(`set zlabel "` ~ label ~ `"`);
 		return this;
 	}
 
-	/* Null argument is auto-scale */
+	/**
+	 * Set the range of the Z axis.
+	 *
+	 * Parameters:
+	 *     range - An array of two doubles specifying the minimum and the maximum.
+	 *             Pass $(DIL_KW null) to make the axis auto-scale.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C3DPlot ZRange(double[] range)
 	{
 		if(range !is null)
@@ -104,6 +122,17 @@ class C3DPlot : CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Enable logarithmic scale for the Z axis. Keep in mind that the minimum and
+	 * maximum ranges need to be positive for this to work.
+	 *
+	 * Parameters:
+	 *     use_log - Whether or not to actually set the logarithmic scale.
+	 *     base - Base used for the logarithmic scale.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot ZLogScale(bool use_log = true, int base = 10)
 	{
 		if(use_log)
@@ -167,14 +196,25 @@ class C3DPlot : CGNUPlot
 	}
 }
 
+/**
+ * A 2D data plotter.
+ */
 class C2DPlot : CGNUPlot
 {
+	/**
+	 * See_Also:
+	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
+	 */
 	this()
 	{
 		PlotStyle = "lines";
 		PlotCommand = "plot";
 	}
 
+	/**
+	 * See_Also:
+	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
+	 */
 	this(char[] term)
 	{
 		PlotStyle = "lines";
@@ -182,6 +222,17 @@ class C2DPlot : CGNUPlot
 		super(term);
 	}
 
+	/**
+	 * Plot a pair of arrays. Arrays must have the same size.
+	 *
+	 * Parameters:
+	 *     X - Array of X coordinate data.
+	 *     Y - Array of Y coordinate data.
+	 *     label - Label text to use for this curve.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C2DPlot Plot(T)(T[] X, T[] Y, char[] label = "")
 	{
 		assert(X.length == Y.length, "Arrays must be of equal length to plot.");
@@ -211,6 +262,10 @@ class C2DPlot : CGNUPlot
 		return this;
 	}
 
+	/**
+	 * See_Also:
+	 *     $(SYMLINK CGNUPlot.Style, CGNUPlot.Style)
+	 */
 	C2DPlot Style(char[] style)
 	{
 		super.Style(style);
@@ -219,6 +274,16 @@ class C2DPlot : CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Sets the point type to use if plotting points. This differs from
+	 * terminal to terminal, so experiment to find something good.
+	 *
+	 * Parameters:
+	 *     type - Point type. Pass -1 to reset to the default point type.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C2DPlot PointType(int type)
 	{
 		if(type < 0)
@@ -238,7 +303,15 @@ class C2DPlot : CGNUPlot
 		return this;
 	}
 
-	/* Null argument resets color */
+	/**
+	 * Set the aspect ratio of the plot. Only works with 2D plots (or image 3D plots).
+	 *
+	 * Parameters:
+	 *     ratio - Aspect ratio to use (height / width).
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	C2DPlot Color(int[3] color)
 	{
 		if(color is null)
@@ -257,18 +330,18 @@ private:
 
 /**
  * Base class for all plot types.
- * 
+ *
  * This class is not terribly useful on its own, although you can use it as a
  * direct interface to gnuplot. It also contains functions that are relevant to
  * all plot types. Note that most methods return a pointer to the instance, allowing
  * for method chaining:
- * 
+ *
  * ---
  * (new CGNUPlot()).Title("Test Plot").XRange([-1, 1]).YRange([-1, 1]).PlotRaw("x*x*x");
  * ---
- * 
+ *
  * I prefer this syntax, however:
- * 
+ *
  * ---
  * auto plot = new CGNUPlot();
  * with(plot)
@@ -283,7 +356,8 @@ private:
 class CGNUPlot
 {
 	/**
-	 * See_Also: opCall
+	 * See_Also:
+	 *     $(SYMLINK CGNUPlot.opCall, opCall)
 	 */
 	alias opCall Command;
 
@@ -299,9 +373,9 @@ class CGNUPlot
 
 	/**
 	 * Create a new plot instance while specifying a different terminal type.
-	 * 
+	 *
 	 * Parameters:
-	 *     term = Terminal name. Notable options include: x11, svg, png, pdfcairo, postscript
+	 *     term - Terminal name. Notable options include: x11, svg, png, pdfcairo, postscript
 	 */
 	this(char[] term)
 	{
@@ -311,9 +385,12 @@ class CGNUPlot
 
 	/**
 	 * Send a command directly to gnuplot.
-	 * 
+	 *
 	 * Parameters:
-	 *     command = Command to send to gnuplot.
+	 *     command - Command to send to gnuplot.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
 	 */
 	CGNUPlot opCall(char[] command)
 	{
@@ -327,6 +404,17 @@ class CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Returns errors, if any, that gnuplot returned. This uses a somewhat hacky
+	 * method, requiring a timeout value. The default one should suffice. If you
+	 * think your errors are getting cut off, try increasing it.
+	 *
+	 * Parameters:
+	 *     timeout - Number of milliseconds to wait for gnuplot to respond.
+	 *
+	 * Returns:
+	 *     A string containing the errors.
+	 */
 	char[] GetErrors(int timeout = 100)
 	{
 		char[] ret;
@@ -346,6 +434,24 @@ class CGNUPlot
 		return ret;
 	}
 
+	/**
+	 * Plots a string expression, with some data after it. This method is used
+	 * by all other plot classes to do their plotting, by passing appropriate
+	 * argumets. Can be useful if you want to plot a function and not data:
+	 *
+	 * ---
+	 * plot.PlotRaw("x*x");
+	 * ---
+	 *
+	 * Parameters:
+	 *     args - Arguments to the current plot command.
+	 *     data - Data for the current plot command. This controller uses the
+	 *            inline data entry, so the format needs to be what that method
+	 *            expects.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot PlotRaw(char[] args, char[] data = null)
 	{
 		if(Holding && PlotArgs.length != 0)
@@ -368,6 +474,13 @@ class CGNUPlot
 		return this;
 	}
 
+	/**
+	 * If plotting is held, this plots the commands that were issued earlier.
+	 * It does not disable the hold.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot Flush()
 	{
 		Command(PlotCommand ~ " " ~ PlotArgs);
@@ -379,6 +492,17 @@ class CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Activates plot holding. While plotting is held, successive plot commands
+	 * will be drawn on the same axes. Disable holding or call Flush to plot
+	 * the commands.
+	 *
+	 * Parameters:
+	 *     hold - Specifies whether to start or end holding.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot Hold(bool hold)
 	{
 		Holding = hold;
@@ -388,28 +512,65 @@ class CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Quits the gnuplot process. Call this command when you are done with the
+	 * plot.
+	 */
 	void Quit()
 	{
 		Command("quit");
 		GNUPlot.kill();
 	}
 
+	/**
+	 * Refreshes the plot. Usually you don't need to call this command.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot Refresh()
 	{
 		return Command("refresh");
 	}
 
+	/**
+	 * Set the label for the X axis.
+	 *
+	 * Parameters:
+	 *     label - Label text.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot XLabel(char[] label)
 	{
 		return Command(`set xlabel "` ~ label ~ `"`);
 	}
 
+	/**
+	 * Set the label for the Y axis.
+	 *
+	 * Parameters:
+	 *     label - Label text.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot YLabel(char[] label)
 	{
 		return Command(`set ylabel "` ~ label ~ `"`);
 	}
 
-	/* Null argument is auto-scale */
+	/**
+	 * Set the range of the X axis.
+	 *
+	 * Parameters:
+	 *     range - An array of two doubles specifying the minimum and the maximum.
+	 *             Pass $(DIL_KW null) to make the axis auto-scale.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot XRange(double[] range)
 	{
 		if(range !is null)
@@ -421,7 +582,16 @@ class CGNUPlot
 			return Command("set xrange [*:*]");
 	}
 
-	/* Null argument is auto-scale */
+	/**
+	 * Set the range of the Y axis.
+	 *
+	 * Parameters:
+	 *     range - An array of two doubles specifying the minimum and the maximum.
+	 *             Pass $(DIL_KW null) to make the axis auto-scale.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot YRange(double[] range)
 	{
 		if(range !is null)
@@ -433,6 +603,17 @@ class CGNUPlot
 			return Command("set yrange [*:*]");
 	}
 
+	/**
+	 * Enable logarithmic scale for the X axis. Keep in mind that the minimum and
+	 * maximum ranges need to be positive for this to work.
+	 *
+	 * Parameters:
+	 *     use_log - Whether or not to actually set the logarithmic scale.
+	 *     base - Base used for the logarithmic scale.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot XLogScale(bool use_log = true, int base = 10)
 	{
 		if(use_log)
@@ -441,6 +622,17 @@ class CGNUPlot
 			return Command("unset logscale x");
 	}
 
+	/**
+	 * Enable logarithmic scale for the Y axis. Keep in mind that the minimum and
+	 * maximum ranges need to be positive for this to work.
+	 *
+	 * Parameters:
+	 *     use_log - Whether or not to actually set the logarithmic scale.
+	 *     base - Base used for the logarithmic scale.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot YLogScale(bool use_log = true, int base = 10)
 	{
 		if(use_log)
@@ -449,11 +641,40 @@ class CGNUPlot
 			return Command("unset logscale y");
 	}
 
+	/**
+	 * Set the title of this plot.
+	 *
+	 * Parameters:
+	 *     title - Title text.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot Title(char[] title)
 	{
 		return Command(`set title "` ~ title ~ `"`);
 	}
 
+	/**
+	 * Set the style of this plot. Any style used by gnuplot is accetable here. $(P)
+	 *
+	 * Here are some commonly used plot styles. $(P)
+	 *
+	 * For 2D and 3D plots.$(P)
+	 *     $(UL lines)
+	 *     $(UL points)
+	 *     $(UL linespoints)
+	 * $(P)
+	 * For 3D plots only:$(P)
+	 *     $(UL image - Image plotting.)
+	 *     $(UL pm3d - Surface plotting.)
+	 *
+	 * Parameters:
+	 *     title - Title text.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot Style(char[] style)
 	{
 		PlotStyle = style;
@@ -461,11 +682,30 @@ class CGNUPlot
 		return this;
 	}
 
+	/**
+	 * Set the aspect ratio of the plot. Only works with 2D plots (or image 3D plots).
+	 *
+	 * Parameters:
+	 *     ratio - Aspect ratio to use (height / width).
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot AspectRatio(double ratio)
 	{
 		return Command(Format("set size ratio {}", ratio));
 	}
 
+	/**
+	 * If you set a terminal that can output files, use this function to set the filename
+	 * of the resultant file.
+	 *
+	 * Parameters:
+	 *     filename - Filename text.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
 	CGNUPlot OutputFile(char[] filename)
 	{
 		return Command(Format(`set output "{}"`, filename));
