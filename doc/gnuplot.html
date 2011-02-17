@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>gnuplot</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="gnuplot">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-gnuplot"><a href="htmlsrc/gnuplot.html" class="symbol">gnuplot</a></h1>
+
+<div class="summary"><div class="cmnt">This is a simple gnuplot (http://www.gnuplot.info/) controller. The term controller
+ in this context means that this code spawns a gnuplot process and controls it via
+ pipes. Two syntaxes are supported by this code:</div></div>
+<div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+</pre></td><td class="d_codetext"><pre>
+(<span class="k">new</span> <span class="i">CGNUPlot</span>()).<span class="i">Title</span>(<span class="sl">"Test Plot"</span>).<span class="i">XRange</span>([-<span class="n">1</span>, <span class="n">1</span>]).<span class="i">YRange</span>([-<span class="n">1</span>, <span class="n">1</span>]).<span class="i">PlotRaw</span>(<span class="sl">"x*x*x"</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+ Or this syntax:
+<p class="bl"></p>
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+<a href="#L6_ex2" name="L6_ex2">6</a>
+<a href="#L7_ex2" name="L7_ex2">7</a>
+<a href="#L8_ex2" name="L8_ex2">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">plot</span> = <span class="k">new</span> <span class="i">CGNUPlot</span>();
+<span class="k">with</span>(<span class="i">plot</span>)
+{
+    <span class="i">Title</span> = <span class="sl">"Test Plot"</span>;
+    <span class="i">XRange</span> = [-<span class="n">1</span>, <span class="n">1</span>];
+    <span class="i">YRange</span> = [-<span class="n">1</span>, <span class="n">1</span>];
+    <span class="i">PlotRaw</span>(<span class="sl">"x*x*x"</span>);
+}</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="C3DPlot" href="htmlsrc/gnuplot.html#L99">C3DPlot</a> : <span class="bclass">CGNUPlot</span> <a href="gnuplot.html#C3DPlot" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A 3D data plotter.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="C3DPlot.this" href="htmlsrc/gnuplot.html#L105">this</a><span class="params">()</span> <a href="gnuplot.html#C3DPlot.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">See Also:</p><div class="cmnt"><a href="#CGNUPlot.this">CGNUPlot.this</a></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="C3DPlot.this:2" href="htmlsrc/gnuplot.html#L116">this</a><span class="params">(char[] <em>term</em>)</span> <a href="gnuplot.html#C3DPlot.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">See Also:</p><div class="cmnt"><a href="#CGNUPlot.this">CGNUPlot.this</a></div></dd>
+<dt class="decl"><span class="rettyp">C3DPlot</span> <a class="symbol _function" name="C3DPlot.ZLabel" href="htmlsrc/gnuplot.html#L133">ZLabel</a><span class="params">(char[] <em>label</em>)</span> <a href="gnuplot.html#C3DPlot.ZLabel" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the label for the Z axis.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">label - Label text.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">C3DPlot</span> <a class="symbol _function" name="C3DPlot.ZRange" href="htmlsrc/gnuplot.html#L149">ZRange</a><span class="params">(double[] <em>range</em>)</span> <a href="gnuplot.html#C3DPlot.ZRange" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the range of the Z axis.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">range - An array of two doubles specifying the minimum and the maximum.
+             Pass <span class="kw">null</span> to make the axis auto-scale.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="C3DPlot.ZLogScale" href="htmlsrc/gnuplot.html#L173">ZLogScale</a><span class="params">(bool <em>use_log</em> = <span class="defval"><span class="k">true</span></span>, int <em>base</em> = <span class="defval"><span class="n">10</span></span>)</span> <a href="gnuplot.html#C3DPlot.ZLogScale" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Enable logarithmic scale for the Z axis. Keep in mind that the minimum and
+ maximum ranges need to be positive for this to work.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">use_log - Whether or not to actually set the logarithmic scale.
+     base - Base used for the logarithmic scale.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">C3DPlot</span> <a class="symbol _function" name="C3DPlot.View" href="htmlsrc/gnuplot.html#L193">View</a><span class="params">(double[] <em>x_z_rot</em>)</span> <a href="gnuplot.html#C3DPlot.View" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the view direction.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">x_z_rot - Rotation around the x and the z axes, in degrees. Pass <span class="kw">null</span>
+               to set the "map" view, suitable for image plots.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">C3DPlot</span> <a class="symbol _function" name="C3DPlot.Palette" href="htmlsrc/gnuplot.html#L212">Palette</a><span class="params">(char[] <em>pal</em>)</span> <a href="gnuplot.html#C3DPlot.Palette" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the palette. This can be either "color" or "gray".</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">pal - Name of the palette.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">C3DPlot</span> <a class="symbol _function" name="C3DPlot.Palette:2" href="htmlsrc/gnuplot.html#L229">Palette</a><span class="params">(int[3] <em>triplet</em>...)</span> <a href="gnuplot.html#C3DPlot.Palette:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the palette using the RGB formulae. The default is 7, 5, 15. See the gnuplot
+ documentation or the internet for more options.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">triplet - Formula indexes.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">C3DPlot</span> <a class="symbol _function" name="C3DPlot.Plot" href="htmlsrc/gnuplot.html#L248">Plot</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>data</em>, size_t <em>w</em>, size_t <em>h</em>, char[] <em>label</em> = <span class="defval"><span class="sl">""</span></span>)</span> <a href="gnuplot.html#C3DPlot.Plot" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Plot a rectangular matrix of values.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">data - Linear array to the data. Assumes row-major storage.
+     w - Width of the array.
+     h - Height of the array.
+     label - Label text to use for this surface.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="C2DPlot" href="htmlsrc/gnuplot.html#L280">C2DPlot</a> : <span class="bclass">CGNUPlot</span> <a href="gnuplot.html#C2DPlot" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A 2D data plotter.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="C2DPlot.this" href="htmlsrc/gnuplot.html#L286">this</a><span class="params">()</span> <a href="gnuplot.html#C2DPlot.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">See Also:</p><div class="cmnt"><a href="#CGNUPlot.this">CGNUPlot.this</a></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="C2DPlot.this:2" href="htmlsrc/gnuplot.html#L296">this</a><span class="params">(char[] <em>term</em>)</span> <a href="gnuplot.html#C2DPlot.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">See Also:</p><div class="cmnt"><a href="#CGNUPlot.this">CGNUPlot.this</a></div></dd>
+<dt class="decl"><span class="rettyp">C2DPlot</span> <a class="symbol _function" name="C2DPlot.Plot" href="htmlsrc/gnuplot.html#L314">Plot</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>X</em>, T[] <em>Y</em>, char[] <em>label</em> = <span class="defval"><span class="sl">""</span></span>)</span> <a href="gnuplot.html#C2DPlot.Plot" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Plot a pair of arrays. Arrays must have the same size.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">X - Array of X coordinate data.
+     Y - Array of Y coordinate data.
+     label - Label text to use for this curve.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">C2DPlot</span> <a class="symbol _function" name="C2DPlot.Style" href="htmlsrc/gnuplot.html#L347">Style</a><span class="params">(char[] <em>style</em>)</span> <a href="gnuplot.html#C2DPlot.Style" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">See Also:</p><div class="cmnt"><a href="#CGNUPlot.Style">CGNUPlot.Style</a></div></dd>
+<dt class="decl"><span class="rettyp">C2DPlot</span> <a class="symbol _function" name="C2DPlot.PointType" href="htmlsrc/gnuplot.html#L365">PointType</a><span class="params">(int <em>type</em>)</span> <a href="gnuplot.html#C2DPlot.PointType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the point type to use if plotting points. This differs from
+ terminal to terminal, so experiment to find something good.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">type - Point type. Pass -1 to reset to the default point type.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">C2DPlot</span> <a class="symbol _function" name="C2DPlot.Thickness" href="htmlsrc/gnuplot.html#L384">Thickness</a><span class="params">(float <em>thickness</em>)</span> <a href="gnuplot.html#C2DPlot.Thickness" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the thickness of points/lines for subsequent plot commands.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">thickness - Thickness of the point/lines.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">C2DPlot</span> <a class="symbol _function" name="C2DPlot.Color" href="htmlsrc/gnuplot.html#L403">Color</a><span class="params">(int[3] <em>color</em>...)</span> <a href="gnuplot.html#C2DPlot.Color" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the color of points/lines for subsequent plot commands.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">color - Triplet of values specifying the red, green and blue components
+             of the color. Each component ranges between 0 and 255.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="CGNUPlot" href="htmlsrc/gnuplot.html#L426">CGNUPlot</a> <a href="gnuplot.html#CGNUPlot" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for all plot types.</div></div>
+<div class="cmnt">This class is not terribly useful on its own, although you can use it as a
+ direct interface to gnuplot. It also contains functions that are relevant to
+ all plot types.</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> opCall <a class="symbol _alias" name="CGNUPlot.Command" href="htmlsrc/gnuplot.html#L432">Command</a> <a href="gnuplot.html#CGNUPlot.Command" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">See Also:</p><div class="cmnt"><a href="#CGNUPlot.opCall">opCall</a></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="CGNUPlot.this" href="htmlsrc/gnuplot.html#L437">this</a><span class="params">()</span> <a href="gnuplot.html#CGNUPlot.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new plot instance using the default terminal.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="CGNUPlot.this:2" href="htmlsrc/gnuplot.html#L450">this</a><span class="params">(char[] <em>term</em>)</span> <a href="gnuplot.html#CGNUPlot.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new plot instance while specifying a different terminal type.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">term - Terminal name. Notable options include: x11, svg, png, pdfcairo, postscript</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.opCall" href="htmlsrc/gnuplot.html#L465">opCall</a><span class="params">(char[] <em>command</em>)</span> <a href="gnuplot.html#CGNUPlot.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Send a command directly to gnuplot.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">command - Command to send to gnuplot.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="CGNUPlot.GetErrors" href="htmlsrc/gnuplot.html#L490">GetErrors</a><span class="params">(int <em>timeout</em> = <span class="defval"><span class="n">100</span></span>)</span> <a href="gnuplot.html#CGNUPlot.GetErrors" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns errors, if any, that gnuplot returned. This uses a somewhat hacky
+ method, requiring a timeout value. The default one should suffice. If you
+ think your errors are getting cut off, try increasing it.
+ 
+ Only works on Linux.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">timeout - Number of milliseconds to wait for gnuplot to respond.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string containing the errors.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.PlotRaw" href="htmlsrc/gnuplot.html#L532">PlotRaw</a><span class="params">(char[] <em>args</em>, char[] <em>data</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="gnuplot.html#CGNUPlot.PlotRaw" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Plots a string expression, with some data after it. This method is used
+ by all other plot classes to do their plotting, by passing appropriate
+ argumets. Can be useful if you want to plot a function and not data:</div></div>
+<div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">plot</span>.<span class="i">PlotRaw</span>(<span class="sl">"x*x"</span>);</pre>
+</td></tr>
+</table></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">args - Arguments to the current plot command.
+     data - Data for the current plot command. This controller uses the
+            inline data entry, so the format needs to be what that method
+            expects.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.Flush" href="htmlsrc/gnuplot.html#L561">Flush</a><span class="params">()</span> <a href="gnuplot.html#CGNUPlot.Flush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">If plotting is held, this plots the commands that were issued earlier.
+ It does not disable the hold.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.Hold" href="htmlsrc/gnuplot.html#L583">Hold</a><span class="params">(bool <em>hold</em>)</span> <a href="gnuplot.html#CGNUPlot.Hold" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Activates plot holding. While plotting is held, successive plot commands
+ will be drawn on the same axes. Disable holding or call Flush to plot
+ the commands.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">hold - Specifies whether to start or end holding.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="CGNUPlot.Quit" href="htmlsrc/gnuplot.html#L596">Quit</a><span class="params">()</span> <a href="gnuplot.html#CGNUPlot.Quit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Quits the gnuplot process. Call this command when you are done with the
+ plot.</div></div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.Refresh" href="htmlsrc/gnuplot.html#L608">Refresh</a><span class="params">()</span> <a href="gnuplot.html#CGNUPlot.Refresh" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Refreshes the plot. Usually you don't need to call this command.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.XLabel" href="htmlsrc/gnuplot.html#L622">XLabel</a><span class="params">(char[] <em>label</em>)</span> <a href="gnuplot.html#CGNUPlot.XLabel" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the label for the X axis.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">label - Label text.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.YLabel" href="htmlsrc/gnuplot.html#L636">YLabel</a><span class="params">(char[] <em>label</em>)</span> <a href="gnuplot.html#CGNUPlot.YLabel" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the label for the Y axis.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">label - Label text.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.XRange" href="htmlsrc/gnuplot.html#L651">XRange</a><span class="params">(double[] <em>range</em>)</span> <a href="gnuplot.html#CGNUPlot.XRange" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the range of the X axis.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">range - An array of two doubles specifying the minimum and the maximum.
+             Pass <span class="kw">null</span> to make the axis auto-scale.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.YRange" href="htmlsrc/gnuplot.html#L672">YRange</a><span class="params">(double[] <em>range</em>)</span> <a href="gnuplot.html#CGNUPlot.YRange" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the range of the Y axis.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">range - An array of two doubles specifying the minimum and the maximum.
+             Pass <span class="kw">null</span> to make the axis auto-scale.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.XLogScale" href="htmlsrc/gnuplot.html#L694">XLogScale</a><span class="params">(bool <em>use_log</em> = <span class="defval"><span class="k">true</span></span>, int <em>base</em> = <span class="defval"><span class="n">10</span></span>)</span> <a href="gnuplot.html#CGNUPlot.XLogScale" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Enable logarithmic scale for the X axis. Keep in mind that the minimum and
+ maximum ranges need to be positive for this to work.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">use_log - Whether or not to actually set the logarithmic scale.
+     base - Base used for the logarithmic scale.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.YLogScale" href="htmlsrc/gnuplot.html#L713">YLogScale</a><span class="params">(bool <em>use_log</em> = <span class="defval"><span class="k">true</span></span>, int <em>base</em> = <span class="defval"><span class="n">10</span></span>)</span> <a href="gnuplot.html#CGNUPlot.YLogScale" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Enable logarithmic scale for the Y axis. Keep in mind that the minimum and
+ maximum ranges need to be positive for this to work.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">use_log - Whether or not to actually set the logarithmic scale.
+     base - Base used for the logarithmic scale.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.Title" href="htmlsrc/gnuplot.html#L730">Title</a><span class="params">(char[] <em>title</em>)</span> <a href="gnuplot.html#CGNUPlot.Title" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the title of this plot.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">title - Title text.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.Style" href="htmlsrc/gnuplot.html#L755">Style</a><span class="params">(char[] <em>style</em>)</span> <a href="gnuplot.html#CGNUPlot.Style" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the style of this plot. Any style used by gnuplot is accetable here. <p></p></div></div>
+<div class="cmnt">Here are some commonly used plot styles. <p></p>
+<p class="bl"></p>
+ For 2D and 3D plots.<p></p>
+     <ul>lines</ul>
+     <ul>points</ul>
+     <ul>linespoints</ul>
+ <p></p>
+ For 3D plots only:<p></p>
+     <ul>image - Image plotting.</ul>
+     <ul>pm3d - Surface plotting.</ul></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">title - Title text.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.AspectRatio" href="htmlsrc/gnuplot.html#L771">AspectRatio</a><span class="params">(double <em>ratio</em>)</span> <a href="gnuplot.html#CGNUPlot.AspectRatio" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the aspect ratio of the plot. Only works with 2D plots (or image 3D plots).</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">ratio - Aspect ratio to use (height / width).</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd>
+<dt class="decl"><span class="rettyp">CGNUPlot</span> <a class="symbol _function" name="CGNUPlot.OutputFile" href="htmlsrc/gnuplot.html#L786">OutputFile</a><span class="params">(char[] <em>filename</em>)</span> <a href="gnuplot.html#CGNUPlot.OutputFile" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">If you set a terminal that can output files, use this function to set the filename
+ of the resultant file.</div></div>
+<p class="sec_header">Parameters:</p><div class="cmnt">filename - Filename text.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">Reference to this instance.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p></p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Wed Feb 16 20:55:31 2011. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>
