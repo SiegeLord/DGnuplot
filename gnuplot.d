@@ -445,7 +445,7 @@ class CGNUPlot
 	 * Create a new plot instance while specifying a different terminal type.
 	 *
 	 * Parameters:
-	 *     term - Terminal name. Notable options include: x11, svg, png, pdfcairo, postscript
+	 *     term - Terminal name. Notable options include: wxt, svg, png, pdfcairo, postscript.
 	 */
 	this(char[] term)
 	{
