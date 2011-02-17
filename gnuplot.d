@@ -173,7 +173,7 @@ class C3DPlot : CGNUPlot
 
 		ArgsSink.Size = 0;
 		DataSink.Size = 0;
-		DataSink.Reserve(w * h * 10);
+		DataSink.Reserve(w * h * 15);
 
 		ArgsSink ~= `"-" matrix`;
 		ArgsSink ~= ` title "` ~ label ~ `" with ` ~ PlotStyle;
@@ -183,7 +183,7 @@ class C3DPlot : CGNUPlot
 		{
 			for(int x = 0; x < w; x++)
 			{
-				LayoutInst.convert(&DataSink.Sink, "{} ", data[y * w + x]);
+				LayoutInst.convert(&DataSink.Sink, "{:e6} ", cast(double)data[y * w + x]);
 			}
 			DataSink ~= "\n";
 		}
@@ -239,13 +239,13 @@ class C2DPlot : CGNUPlot
 
 		ArgsSink.Size = 0;
 		DataSink.Size = 0;
-		DataSink.Reserve(X.length * 10);
+		DataSink.Reserve(X.length * 15);
 
 		ArgsSink ~= `"-"`;
 		ArgsSink ~= ` title "` ~ label ~ `"`;
 		ArgsSink ~= " with " ~ PlotStyle;
 		if(PlotColor.length)
-			ArgsSink ~= ` lt rgb "` ~ PlotColor ~ `"`;
+			ArgsSink ~= ` lc rgb "` ~ PlotColor ~ `"`;
 		ArgsSink ~= ` lw ` ~ PlotThickness;
 		if(StyleHasPoints && PlotPointType.length)
 			ArgsSink ~= ` pt ` ~ PlotPointType;
@@ -253,7 +253,7 @@ class C2DPlot : CGNUPlot
 		foreach(ii, x; X)
 		{
 			auto y = Y[ii];
-			LayoutInst.convert(&DataSink.Sink, "{}\t{}\n", x, y);
+			LayoutInst.convert(&DataSink.Sink, "{:e6}\t{:e6}\n", cast(double)x, cast(double)y);
 		}
 		DataSink ~= "e\n";
 
