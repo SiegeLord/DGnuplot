@@ -54,7 +54,10 @@ import tango.core.Array;
 import tango.text.convert.Format;
 import tango.text.convert.Layout;
 
-import tango.stdc.posix.poll;
+version(linux)
+{
+	import tango.stdc.posix.poll;
+}
 
 private struct STextSink(T)
 {
@@ -475,6 +478,8 @@ class CGNUPlot
 	 * Returns errors, if any, that gnuplot returned. This uses a somewhat hacky
 	 * method, requiring a timeout value. The default one should suffice. If you
 	 * think your errors are getting cut off, try increasing it.
+	 * 
+	 * Only works on Linux.
 	 *
 	 * Parameters:
 	 *     timeout - Number of milliseconds to wait for gnuplot to respond.
@@ -484,21 +489,26 @@ class CGNUPlot
 	 */
 	char[] GetErrors(int timeout = 100)
 	{
-		char[] ret;
-
-		pollfd fd;
-		fd.fd = GNUPlot.stderr.fileHandle;
-		fd.events = POLLIN;
-
-		while(poll(&fd, 1, timeout) > 0)
+		version(linux)
 		{
-			char[1024] buf;
-			int len = GNUPlot.stderr.read(buf);
-			if(len > 0)
-				ret ~= buf[0..len];
-		}
+			char[] ret;
 
-		return ret;
+			pollfd fd;
+			fd.fd = GNUPlot.stderr.fileHandle;
+			fd.events = POLLIN;
+
+			while(poll(&fd, 1, timeout) > 0)
+			{
+				char[1024] buf;
+				int len = GNUPlot.stderr.read(buf);
+				if(len > 0)
+					ret ~= buf[0..len];
+			}
+
+			return ret;
+		}
+		else
+			return "";
 	}
 
 	/**
