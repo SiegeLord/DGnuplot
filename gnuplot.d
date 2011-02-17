@@ -124,8 +124,8 @@ class C3DPlot : CGNUPlot
 	/**
 	 * Set the label for the Z axis.
 	 *
-	 * Parameters:
-	 *     label - Label text.
+	 * Params:
+	 *     label = Label text.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -139,8 +139,8 @@ class C3DPlot : CGNUPlot
 	/**
 	 * Set the range of the Z axis.
 	 *
-	 * Parameters:
-	 *     range - An array of two doubles specifying the minimum and the maximum.
+	 * Params:
+	 *     range = An array of two doubles specifying the minimum and the maximum.
 	 *             Pass $(DIL_KW null) to make the axis auto-scale.
 	 *
 	 * Returns:
@@ -163,9 +163,9 @@ class C3DPlot : CGNUPlot
 	 * Enable logarithmic scale for the Z axis. Keep in mind that the minimum and
 	 * maximum ranges need to be positive for this to work.
 	 *
-	 * Parameters:
-	 *     use_log - Whether or not to actually set the logarithmic scale.
-	 *     base - Base used for the logarithmic scale.
+	 * Params:
+	 *     use_log = Whether or not to actually set the logarithmic scale.
+	 *     base = Base used for the logarithmic scale.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -183,8 +183,8 @@ class C3DPlot : CGNUPlot
 	/**
 	 * Set the view direction.
 	 *
-	 * Parameters:
-	 *     x_z_rot - Rotation around the x and the z axes, in degrees. Pass $(DIL_KW null)
+	 * Params:
+	 *     x_z_rot = Rotation around the x and the z axes, in degrees. Pass $(DIL_KW null)
 	 *               to set the "map" view, suitable for image plots.
 	 *
 	 * Returns:
@@ -203,8 +203,8 @@ class C3DPlot : CGNUPlot
 	/**
 	 * Set the palette. This can be either "color" or "gray".
 	 *
-	 * Parameters:
-	 *     pal - Name of the palette.
+	 * Params:
+	 *     pal = Name of the palette.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -220,8 +220,8 @@ class C3DPlot : CGNUPlot
 	 * Set the palette using the RGB formulae. The default is 7, 5, 15. See the gnuplot
 	 * documentation or the internet for more options.
 	 *
-	 * Parameters:
-	 *     triplet - Formula indexes.
+	 * Params:
+	 *     triplet = Formula indexes.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -236,11 +236,11 @@ class C3DPlot : CGNUPlot
 	/**
 	 * Plot a rectangular matrix of values.
 	 *
-	 * Parameters:
-	 *     data - Linear array to the data. Assumes row-major storage.
-	 *     w - Width of the array.
-	 *     h - Height of the array.
-	 *     label - Label text to use for this surface.
+	 * Params:
+	 *     data = Linear array to the data. Assumes row-major storage.
+	 *     w = Width of the array.
+	 *     h = Height of the array.
+	 *     label = Label text to use for this surface.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -303,10 +303,10 @@ class C2DPlot : CGNUPlot
 	/**
 	 * Plot a pair of arrays. Arrays must have the same size.
 	 *
-	 * Parameters:
-	 *     X - Array of X coordinate data.
-	 *     Y - Array of Y coordinate data.
-	 *     label - Label text to use for this curve.
+	 * Params:
+	 *     X = Array of X coordinate data.
+	 *     Y = Array of Y coordinate data.
+	 *     label = Label text to use for this curve.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -356,8 +356,8 @@ class C2DPlot : CGNUPlot
 	 * Set the point type to use if plotting points. This differs from
 	 * terminal to terminal, so experiment to find something good.
 	 *
-	 * Parameters:
-	 *     type - Point type. Pass -1 to reset to the default point type.
+	 * Params:
+	 *     type = Point type. Pass -1 to reset to the default point type.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -375,8 +375,8 @@ class C2DPlot : CGNUPlot
 	/**
 	 * Set the thickness of points/lines for subsequent plot commands.
 	 *
-	 * Parameters:
-	 *     thickness - Thickness of the point/lines.
+	 * Params:
+	 *     thickness = Thickness of the point/lines.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -393,8 +393,8 @@ class C2DPlot : CGNUPlot
 	/**
 	 * Set the color of points/lines for subsequent plot commands.
 	 *
-	 * Parameters:
-	 *     color - Triplet of values specifying the red, green and blue components
+	 * Params:
+	 *     color = Triplet of values specifying the red, green and blue components
 	 *             of the color. Each component ranges between 0 and 255.
 	 *
 	 * Returns:
@@ -444,8 +444,8 @@ class CGNUPlot
 	/**
 	 * Create a new plot instance while specifying a different terminal type.
 	 *
-	 * Parameters:
-	 *     term - Terminal name. Notable options include: wxt, svg, png, pdfcairo, postscript.
+	 * Params:
+	 *     term = Terminal name. Notable options include: wxt, svg, png, pdfcairo, postscript.
 	 */
 	this(char[] term)
 	{
@@ -456,8 +456,8 @@ class CGNUPlot
 	/**
 	 * Send a command directly to gnuplot.
 	 *
-	 * Parameters:
-	 *     command - Command to send to gnuplot.
+	 * Params:
+	 *     command = Command to send to gnuplot.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -481,8 +481,8 @@ class CGNUPlot
 	 * 
 	 * Only works on Linux.
 	 *
-	 * Parameters:
-	 *     timeout - Number of milliseconds to wait for gnuplot to respond.
+	 * Params:
+	 *     timeout = Number of milliseconds to wait for gnuplot to respond.
 	 *
 	 * Returns:
 	 *     A string containing the errors.
@@ -520,9 +520,9 @@ class CGNUPlot
 	 * plot.PlotRaw("x*x");
 	 * ---
 	 *
-	 * Parameters:
-	 *     args - Arguments to the current plot command.
-	 *     data - Data for the current plot command. This controller uses the
+	 * Params:
+	 *     args = Arguments to the current plot command.
+	 *     data = Data for the current plot command. This controller uses the
 	 *            inline data entry, so the format needs to be what that method
 	 *            expects.
 	 *
@@ -574,8 +574,8 @@ class CGNUPlot
 	 * will be drawn on the same axes. Disable holding or call Flush to plot
 	 * the commands.
 	 *
-	 * Parameters:
-	 *     hold - Specifies whether to start or end holding.
+	 * Params:
+	 *     hold = Specifies whether to start or end holding.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -613,8 +613,8 @@ class CGNUPlot
 	/**
 	 * Set the label for the X axis.
 	 *
-	 * Parameters:
-	 *     label - Label text.
+	 * Params:
+	 *     label = Label text.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -627,8 +627,8 @@ class CGNUPlot
 	/**
 	 * Set the label for the Y axis.
 	 *
-	 * Parameters:
-	 *     label - Label text.
+	 * Params:
+	 *     label = Label text.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -641,8 +641,8 @@ class CGNUPlot
 	/**
 	 * Set the range of the X axis.
 	 *
-	 * Parameters:
-	 *     range - An array of two doubles specifying the minimum and the maximum.
+	 * Params:
+	 *     range = An array of two doubles specifying the minimum and the maximum.
 	 *             Pass $(DIL_KW null) to make the axis auto-scale.
 	 *
 	 * Returns:
@@ -662,8 +662,8 @@ class CGNUPlot
 	/**
 	 * Set the range of the Y axis.
 	 *
-	 * Parameters:
-	 *     range - An array of two doubles specifying the minimum and the maximum.
+	 * Params:
+	 *     range = An array of two doubles specifying the minimum and the maximum.
 	 *             Pass $(DIL_KW null) to make the axis auto-scale.
 	 *
 	 * Returns:
@@ -684,9 +684,9 @@ class CGNUPlot
 	 * Enable logarithmic scale for the X axis. Keep in mind that the minimum and
 	 * maximum ranges need to be positive for this to work.
 	 *
-	 * Parameters:
-	 *     use_log - Whether or not to actually set the logarithmic scale.
-	 *     base - Base used for the logarithmic scale.
+	 * Params:
+	 *     use_log = Whether or not to actually set the logarithmic scale.
+	 *     base = Base used for the logarithmic scale.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -703,9 +703,9 @@ class CGNUPlot
 	 * Enable logarithmic scale for the Y axis. Keep in mind that the minimum and
 	 * maximum ranges need to be positive for this to work.
 	 *
-	 * Parameters:
-	 *     use_log - Whether or not to actually set the logarithmic scale.
-	 *     base - Base used for the logarithmic scale.
+	 * Params:
+	 *     use_log = Whether or not to actually set the logarithmic scale.
+	 *     base = Base used for the logarithmic scale.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -721,8 +721,8 @@ class CGNUPlot
 	/**
 	 * Set the title of this plot.
 	 *
-	 * Parameters:
-	 *     title - Title text.
+	 * Params:
+	 *     title = Title text.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -746,8 +746,8 @@ class CGNUPlot
 	 *     $(UL image - Image plotting)
 	 *     $(UL pm3d - Surface plotting)
 	 *
-	 * Parameters:
-	 *     title - Title text.
+	 * Params:
+	 *     title = Title text.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -762,8 +762,8 @@ class CGNUPlot
 	/**
 	 * Set the aspect ratio of the plot. Only works with 2D plots (or image 3D plots).
 	 *
-	 * Parameters:
-	 *     ratio - Aspect ratio to use (height / width).
+	 * Params:
+	 *     ratio = Aspect ratio to use (height / width).
 	 *
 	 * Returns:
 	 *     Reference to this instance.
@@ -777,8 +777,8 @@ class CGNUPlot
 	 * If you set a terminal that can output files, use this function to set the filename
 	 * of the resultant file.
 	 *
-	 * Parameters:
-	 *     filename - Filename text.
+	 * Params:
+	 *     filename = Filename text.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
