@@ -22,7 +22,7 @@ freely, subject to the following restrictions:
 */
 
 /**
- * This is a simple gnuplot (http://www.gnuplot.info/) controller. The term controller
+ * This is a simple <a href="http://www.gnuplot.info/">gnuplot</a> controller. The term controller
  * in this context means that this code spawns a gnuplot process and controls it via
  * pipes. Two syntaxes are supported by this code:
  *
@@ -743,8 +743,8 @@ class CGNUPlot
 	 *     $(UL linespoints)
 	 * $(P)
 	 * For 3D plots only:$(P)
-	 *     $(UL image - Image plotting.)
-	 *     $(UL pm3d - Surface plotting.)
+	 *     $(UL image - Image plotting)
+	 *     $(UL pm3d - Surface plotting)
 	 *
 	 * Parameters:
 	 *     title - Title text.
