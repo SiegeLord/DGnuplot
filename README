@@ -1,3 +1,24 @@
-This is a simple gnuplot controller written in D1.0.
+This is a simple gnuplot(http://www.gnuplot.info/) controller. The term controller
+in this context means that this code spawns a gnuplot process and controls it via
+pipes. Two syntaxes are supported by this code:
 
-Right now this is a major WIP, but it does work. I'll be polishing it up as time goes on.
+(new CGNUPlot()).Title("Test Plot").XRange([-1, 1]).YRange([-1, 1]).PlotRaw("x*x*x");
+
+Or this syntax:
+
+auto plot = new CGNUPlot();
+with(plot)
+{
+    Title = "Test Plot";
+    XRange = [-1, 1];
+    YRange = [-1, 1];
+    PlotRaw("x*x*x");
+}
+
+It was tested on Linux 64 bit with Tango trunk and gnuplot 4.4. It'll probably work with other versions of gnuplot as well. I'm not sure how well it will work on Windows.
+
+It does not use temporary files to transfer data to gnuplot, instead using inline text entry. This probably makes it faster than similar controllers.
+
+I am still adding features and possibly will be changing the API a bit in the future, but the general philosophy of this controller probably won't change: I don't intend to provide a fully featured plotting program (although you can directly interact with the gnuplot process), rather I just wanted to have a way to quickly plot a few traces and there was no good D library that could do this.
+
+-SiegeLord
