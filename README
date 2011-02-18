@@ -19,6 +19,6 @@ It was tested on Linux 64 bit with Tango trunk and gnuplot 4.4. It'll probably w
 
 It does not use temporary files to transfer data to gnuplot, instead using inline text entry. This probably makes it faster than similar controllers.
 
-I am still adding features and possibly will be changing the API a bit in the future, but the general philosophy of this controller probably won't change: I don't intend to provide a fully featured plotting program (although you can directly interact with the gnuplot process), rather I just wanted to have a way to quickly plot a few traces and there was no good D library that could do this.
+I am still adding features and possibly will be changing the API a bit in the future, but the general philosophy of this controller probably won't change: I didn't intend to provide a fully featured plotting program (although you can directly interact with the gnuplot process), rather I just wanted to have a way to quickly plot a few quick line and image plots and there was no good D library that could do this at the time of this writing.
 
 -SiegeLord
