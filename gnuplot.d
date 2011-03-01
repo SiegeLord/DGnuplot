@@ -796,7 +796,7 @@ class CGNUPlot
 	 */
 	CGNUPlot Terminal(char[] term)
 	{
-		Command("set term " ~ term);
+		return Command("set term " ~ term);
 	}
 private:
 	char[] PlotStyle = "lines";
