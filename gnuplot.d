@@ -450,7 +450,7 @@ class CGNUPlot
 	this(char[] term)
 	{
 		this();
-		Command("set term " ~ term);
+		Terminal = term;
 	}
 
 	/**
@@ -786,6 +786,17 @@ class CGNUPlot
 	CGNUPlot OutputFile(char[] filename)
 	{
 		return Command(Format(`set output "{}"`, filename));
+	}
+	
+	/**
+	 * Sets a terminal type, allowing, for example, output to a file.
+	 *
+	 * Params:
+	 *     term = Terminal name. Notable options include: wxt, svg, png, pdfcairo, postscript.
+	 */
+	CGNUPlot Terminal(char[] term)
+	{
+		Command("set term " ~ term);
 	}
 private:
 	char[] PlotStyle = "lines";
