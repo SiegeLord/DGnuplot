@@ -151,7 +151,7 @@ class C3DPlot : CGNUPlot
 		if(range !is null)
 		{
 			assert(range.length == 2);
-			Command(Format("set zrange [{}:{}]", range[0], range[1]));
+			Command(Format("set zrange [{:e6}:{:e6}]", range[0], range[1]));
 		}
 		else
 			Command("set zrange [*:*]");
@@ -174,7 +174,7 @@ class C3DPlot : CGNUPlot
 		if(range !is null)
 		{
 			assert(range.length == 2);
-			Command(Format("set cbrange [{}:{}]", range[0], range[1]));
+			Command(Format("set cbrange [{:e6}:{:e6}]", range[0], range[1]));
 		}
 		else
 			Command("set cbrange [*:*]");
@@ -676,7 +676,7 @@ class CGNUPlot
 		if(range !is null)
 		{
 			assert(range.length == 2);
-			return Command(Format("set xrange [{}:{}]", range[0], range[1]));
+			return Command(Format("set xrange [{:e6}:{:e6}]", range[0], range[1]));
 		}
 		else
 			return Command("set xrange [*:*]");
@@ -697,7 +697,7 @@ class CGNUPlot
 		if(range !is null)
 		{
 			assert(range.length == 2);
-			return Command(Format("set yrange [{}:{}]", range[0], range[1]));
+			return Command(Format("set yrange [{:e6}:{:e6}]", range[0], range[1]));
 		}
 		else
 			return Command("set yrange [*:*]");
