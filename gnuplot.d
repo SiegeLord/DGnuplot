@@ -158,6 +158,29 @@ class C3DPlot : CGNUPlot
 
 		return this;
 	}
+	
+	/**
+	 * Set the range of the colobar.
+	 *
+	 * Params:
+	 *     range = An array of two doubles specifying the minimum and the maximum.
+	 *             Pass $(DIL_KW null) to make the axis auto-scale.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
+	C3DPlot CRange(double[] range)
+	{
+		if(range !is null)
+		{
+			assert(range.length == 2);
+			Command(Format("set cbrange [{}:{}]", range[0], range[1]));
+		}
+		else
+			Command("set cbrange [*:*]");
+
+		return this;
+	}
 
 	/**
 	 * Enable logarithmic scale for the Z axis. Keep in mind that the minimum and
