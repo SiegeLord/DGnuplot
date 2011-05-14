@@ -50,6 +50,7 @@ import tango.io.Stdout;
 import tango.sys.Process;
 
 import tango.core.Array;
+import tango.math.Math;
 
 import tango.text.convert.Format;
 import tango.text.convert.Layout;
@@ -333,6 +334,63 @@ class C2DPlot : CGNUPlot
 		PlotStyle = "lines";
 		PlotCommand = "plot";
 		super(term);
+	}
+	
+	/**
+	 * Plot a histogram of some data.
+	 *
+	 * Params:
+	 *     data = Array of data.
+	 *     num_bins = Number of bins to use (by default it is 10)
+	 *     label = Label text to use for this histogram.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
+	C2DPlot Histogram(Data_t)(Data_t data, size_t num_bins = 10, char[] label = "")
+	{
+		static assert(IsArray!(Data_t), "Can't make a histogram of something that isn't an array type");
+		assert(num_bins > 0, "Must have at least 2 bins");
+		
+		auto min_val = data[0];
+		auto max_val = data[0];
+		
+		for(size_t ii = 0; ii < data.length; ii++)
+		{
+			if(data[ii] < min_val)
+				min_val = data[ii];
+			if(data[ii] > max_val)
+				max_val = data[ii];
+		}
+		
+		auto bins = new size_t[](num_bins);
+		auto cats = new typeof(min_val)[](num_bins);
+		
+		foreach(idx, ref x; cats)
+			x = idx * (max_val - min_val) / (num_bins - 1);
+		
+		size_t max_bin = 0;
+		
+		if(max_val == min_val)
+		{
+			bins[$/2] = data.length;
+			max_bin = data.length;
+		}
+		else
+		{
+			for(size_t ii = 0; ii < data.length; ii++)
+			{
+				auto idx = cast(size_t)(floor(data[ii] * (num_bins - 1) / (max_val - min_val)));
+				bins[idx]++;
+				if(bins[idx] > max_bin)
+					max_bin = bins[idx];
+			}
+		}
+		
+		YRange = [0, max_bin + 1];
+		if(PlotStyle == "boxes")
+			Command(`set style fill solid border rgbcolor "black"`);
+		return Plot(cats, bins, label);
 	}
 
 	/**

@@ -15,6 +15,15 @@ void main()
 		Y1[ii] = sin(x);
 		Y2[ii] = x * x;
 	}
+	
+	/* A histogram */
+	auto hist = new C2DPlot;
+	with(hist)
+	{
+		Title = "Sample Histogram";
+		Style = "boxes";
+		Histogram([0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4], 5);
+	}
 
 	/* A simple 2D plot */
 	auto plot1 = new C2DPlot;
