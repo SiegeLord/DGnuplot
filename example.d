@@ -2,6 +2,7 @@ module example;
 
 import gnuplot;
 import tango.math.Math;
+import tango.math.random.Random;
 
 void main()
 {
@@ -17,8 +18,20 @@ void main()
 	}
 	
 	/* A histogram */
-	auto hist = new C2DPlot;
-	with(hist)
+	auto hist1 = new C2DPlot;
+	with(hist1)
+	{
+		auto data = new double[](1000);
+		foreach(ii, ref d; data)
+			d = rand.normal!(double);
+		Title = "Sample Histogram";
+		Style = "boxes";
+		Histogram(data, 20);
+	}
+	
+	/* Another histogram */
+	auto hist2 = new C2DPlot;
+	with(hist2)
 	{
 		Title = "Sample Histogram";
 		Style = "boxes";

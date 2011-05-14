@@ -367,7 +367,7 @@ class C2DPlot : CGNUPlot
 		auto cats = new typeof(min_val)[](num_bins);
 		
 		foreach(idx, ref x; cats)
-			x = idx * (max_val - min_val) / (num_bins - 1);
+			x = idx * (max_val - min_val) / (num_bins - 1) + min_val;
 		
 		size_t max_bin = 0;
 		
@@ -380,7 +380,7 @@ class C2DPlot : CGNUPlot
 		{
 			for(size_t ii = 0; ii < data.length; ii++)
 			{
-				auto idx = cast(size_t)(floor(data[ii] * (num_bins - 1) / (max_val - min_val)));
+				auto idx = cast(size_t)(floor((data[ii] - min_val) * (num_bins - 1) / (max_val - min_val)));
 				bins[idx]++;
 				if(bins[idx] > max_bin)
 					max_bin = bins[idx];
