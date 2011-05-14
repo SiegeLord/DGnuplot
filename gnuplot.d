@@ -59,6 +59,11 @@ version(linux)
 	import tango.stdc.posix.poll;
 }
 
+private template IsArray(T)
+{
+	const IsArray = is(typeof(T.length)) && is(typeof(T[0]));
+}
+
 private struct STextSink(T)
 {
 	alias Sink opCatAssign;
@@ -260,7 +265,7 @@ class C3DPlot : CGNUPlot
 	 * Plot a rectangular matrix of values.
 	 *
 	 * Params:
-	 *     data = Linear array to the data. Assumes row-major storage.
+	 *     data = Linear array to the data or a numerical constant. Assumes row-major storage.
 	 *     w = Width of the array.
 	 *     h = Height of the array.
 	 *     label = Label text to use for this surface.
@@ -268,9 +273,11 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C3DPlot Plot(T)(T[] data, size_t w, size_t h, char[] label = "")
+	C3DPlot Plot(Data_t)(Data_t data, size_t w, size_t h, char[] label = "")
 	{
-		assert(data.length == w * h, "Width and height don't match the size of the data array");
+		const arr = IsArray!(Data_t);
+		static if(arr)
+			assert(data.length == w * h, "Width and height don't match the size of the data array");
 
 		ArgsSink.Size = 0;
 		DataSink.Size = 0;
@@ -284,7 +291,12 @@ class C3DPlot : CGNUPlot
 		{
 			for(int x = 0; x < w; x++)
 			{
-				LayoutInst.convert(&DataSink.Sink, "{:e6} ", cast(double)data[y * w + x]);
+				static if(arr)
+					auto z = data[y * w + x];
+				else
+					auto z = data;
+
+				LayoutInst.convert(&DataSink.Sink, "{:e6} ", cast(double)z);
 			}
 			DataSink ~= "\n";
 		}
@@ -327,20 +339,33 @@ class C2DPlot : CGNUPlot
 	 * Plot a pair of arrays. Arrays must have the same size.
 	 *
 	 * Params:
-	 *     X = Array of X coordinate data.
-	 *     Y = Array of Y coordinate data.
+	 *     X = Array of X coordinate data or a numerical constant.
+	 *     Y = Array of Y coordinate data or a numerical constant.
 	 *     label = Label text to use for this curve.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C2DPlot Plot(T)(T[] X, T[] Y, char[] label = "")
+	C2DPlot Plot(X_t, Y_t)(X_t X, Y_t Y, char[] label = "")
 	{
-		assert(X.length == Y.length, "Arrays must be of equal length to plot.");
+		const x_arr = IsArray!(X_t);
+		const y_arr = IsArray!(Y_t);
+		
+		size_t len;
+		
+		static if(x_arr && y_arr)
+			assert(X.length == Y.length, "Arrays must be of equal length to plot.");
+		
+		static if(x_arr)
+			len = X.length;
+		else static if(y_arr)
+			len = Y.length;
+		else
+			len = 1;
 
 		ArgsSink.Size = 0;
 		DataSink.Size = 0;
-		DataSink.Reserve(X.length * 15);
+		DataSink.Reserve(len * 15);
 
 		ArgsSink ~= `"-"`;
 		ArgsSink ~= ` title "` ~ label ~ `"`;
@@ -351,9 +376,18 @@ class C2DPlot : CGNUPlot
 		if(StyleHasPoints && PlotPointType.length)
 			ArgsSink ~= ` pt ` ~ PlotPointType;
 
-		foreach(ii, x; X)
+		for(size_t ii = 0; ii < len; ii++)
 		{
-			auto y = Y[ii];
+			static if(x_arr)
+				auto x = X[ii];
+			else
+				auto x = X;
+
+			static if(y_arr)
+				auto y = Y[ii];
+			else
+				auto y = Y;
+
 			LayoutInst.convert(&DataSink.Sink, "{:e6}\t{:e6}\n", cast(double)x, cast(double)y);
 		}
 		DataSink ~= "e\n";
