@@ -300,7 +300,7 @@ class C3DPlot : CGNUPlot
 		ArgsSink ~= `3`;
 
 		ArgsSink ~= ` title "` ~ label ~ `" with ` ~ PlotStyle;
-		ArgsSink ~= "\n";
+		AppendExtraStyleStr();
 
 		for(int y = 0; y < h; y++)
 		{
@@ -442,12 +442,8 @@ class C2DPlot : CGNUPlot
 		ArgsSink ~= `"-"`;
 		ArgsSink ~= ` title "` ~ label ~ `"`;
 		ArgsSink ~= " with " ~ PlotStyle;
-		if(PlotColor.length)
-			ArgsSink ~= ` lc rgb "` ~ PlotColor ~ `"`;
-		ArgsSink ~= ` lw ` ~ PlotThickness;
-		if(StyleHasPoints && PlotPointType.length)
-			ArgsSink ~= ` pt ` ~ PlotPointType;
-
+		AppendExtraStyleStr();
+		
 		for(size_t ii = 0; ii < len; ii++)
 		{
 			static if(x_arr)
@@ -468,81 +464,6 @@ class C2DPlot : CGNUPlot
 
 		return this;
 	}
-
-	/**
-	 * See_Also:
-	 *     $(SYMLINK CGNUPlot.Style, CGNUPlot.Style)
-	 */
-	C2DPlot Style(char[] style)
-	{
-		super.Style(style);
-		StyleHasPoints = PlotStyle.length != PlotStyle.find("points");
-
-		return this;
-	}
-
-	/**
-	 * Set the point type to use if plotting points. This differs from
-	 * terminal to terminal, so experiment to find something good.
-	 *
-	 * Params:
-	 *     type = Point type. Pass -1 to reset to the default point type.
-	 *
-	 * Returns:
-	 *     Reference to this instance.
-	 */
-	C2DPlot PointType(int type)
-	{
-		if(type < 0)
-			PlotPointType = "";
-		else
-			PlotPointType = Format("{}", type);
-
-		return this;
-	}
-
-	/**
-	 * Set the thickness of points/lines for subsequent plot commands.
-	 *
-	 * Params:
-	 *     thickness = Thickness of the point/lines.
-	 *
-	 * Returns:
-	 *     Reference to this instance.
-	 */
-	C2DPlot Thickness(float thickness)
-	{
-		assert(thickness >= 0);
-
-		PlotThickness = Format("{}", thickness);
-
-		return this;
-	}
-
-	/**
-	 * Set the color of points/lines for subsequent plot commands.
-	 *
-	 * Params:
-	 *     color = Triplet of values specifying the red, green and blue components
-	 *             of the color. Each component ranges between 0 and 255.
-	 *
-	 * Returns:
-	 *     Reference to this instance.
-	 */
-	C2DPlot Color(int[3] color...)
-	{
-		if(color is null)
-			PlotColor = "";
-		else
-			PlotColor = Format("#{:x2}{:x2}{:x2}", color[0], color[1], color[2]);
-		return this;
-	}
-
-private:
-	bool StyleHasPoints = false;
-	char[] PlotThickness = "1";
-	char[] PlotPointType = "0";
-	char[] PlotColor = "";
 }
 
 /**
@@ -884,7 +805,65 @@ class CGNUPlot
 	CGNUPlot Style(char[] style)
 	{
 		PlotStyle = style;
+		StyleHasPoints = PlotStyle.length != PlotStyle.find("points");
+		
+		return this;
+	}
+	
+	/**
+	 * Set the point type to use if plotting points. This differs from
+	 * terminal to terminal, so experiment to find something good.
+	 *
+	 * Params:
+	 *     type = Point type. Pass -1 to reset to the default point type.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
+	CGNUPlot PointType(int type)
+	{
+		if(type < 0)
+			PlotPointType = "";
+		else
+			PlotPointType = Format("{}", type);
 
+		return this;
+	}
+
+	/**
+	 * Set the thickness of points/lines for subsequent plot commands.
+	 *
+	 * Params:
+	 *     thickness = Thickness of the point/lines.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
+	CGNUPlot Thickness(float thickness)
+	{
+		assert(thickness >= 0);
+
+		PlotThickness = Format("{}", thickness);
+
+		return this;
+	}
+
+	/**
+	 * Set the color of points/lines for subsequent plot commands.
+	 *
+	 * Params:
+	 *     color = Triplet of values specifying the red, green and blue components
+	 *             of the color. Each component ranges between 0 and 255.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
+	CGNUPlot Color(int[3] color...)
+	{
+		if(color is null)
+			PlotColor = "";
+		else
+			PlotColor = Format("#{:x2}{:x2}{:x2}", color[0], color[1], color[2]);
 		return this;
 	}
 
@@ -927,13 +906,26 @@ class CGNUPlot
 	{
 		return Command("set term " ~ term);
 	}
-private:
+protected:
+	void AppendExtraStyleStr()
+	{
+		if(PlotColor.length)
+			ArgsSink ~= ` lc rgb "` ~ PlotColor ~ `"`;
+		ArgsSink ~= ` lw ` ~ PlotThickness;
+		if(StyleHasPoints && PlotPointType.length)
+			ArgsSink ~= ` pt ` ~ PlotPointType;
+	}
+
 	char[] PlotStyle = "lines";
 
 	bool Holding = false;
 	char[] PlotCommand = "plot";
 	char[] PlotArgs;
 	char[] PlotData;
+	bool StyleHasPoints = false;
+	char[] PlotThickness = "1";
+	char[] PlotPointType = "0";
+	char[] PlotColor = "";
 
 	Process GNUPlot;
 	STextSink!(char) ArgsSink;
