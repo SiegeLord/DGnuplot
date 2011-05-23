@@ -269,13 +269,17 @@ class C3DPlot : CGNUPlot
 	 *     data = Linear array to the data or a numerical constant. Assumes row-major storage.
 	 *     w = Width of the array.
 	 *     h = Height of the array.
+	 *     true_xrange = the x range that the columns of the matrix cover.
+	 *     true_yrange = the y range that the rows of the matrix cover.
 	 *     label = Label text to use for this surface.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C3DPlot Plot(Data_t)(Data_t data, size_t w, size_t h, char[] label = "")
+	C3DPlot Plot(Data_t)(Data_t data, size_t w, size_t h, double[2] true_xrange = [0,0], double[2] true_yrange = [0,0], char[] label = "")
 	{
+		assert(w > 1 && h > 1, "Width and height must be greater than 1");
+		
 		const arr = IsArray!(Data_t);
 		static if(arr)
 			assert(data.length == w * h, "Width and height don't match the size of the data array");
@@ -284,7 +288,17 @@ class C3DPlot : CGNUPlot
 		DataSink.Size = 0;
 		DataSink.Reserve(w * h * 15);
 
-		ArgsSink ~= `"-" matrix`;
+		ArgsSink ~= `"-" matrix using `;
+		if(true_xrange[0] != true_xrange[1])
+			ArgsSink ~= Format("({:e6} + {:e6} * $1):", true_xrange[0], (true_xrange[1] - true_xrange[0]) / (w - 1));
+		else
+			ArgsSink ~= `1:`;
+		if(true_yrange[0] != true_yrange[1])
+			ArgsSink ~= Format("({:e6} + {:e6} * $2):", true_yrange[0], (true_yrange[1] - true_yrange[0]) / (h - 1));
+		else
+			ArgsSink ~= `2:`;
+		ArgsSink ~= `3`;
+
 		ArgsSink ~= ` title "` ~ label ~ `" with ` ~ PlotStyle;
 		ArgsSink ~= "\n";
 
