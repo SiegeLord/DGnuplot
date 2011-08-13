@@ -108,7 +108,7 @@ void main()
 	{
 		Title = "Image plotting";
 		Palette(23,28,3);
-		Plot(matrix, 10, 10, "cos(x) * sin(y)");
+		Plot(matrix, 10, 10, [0,0], [0,0], "cos(x) * sin(y)");
 	}
 
 	/* A surface plot */
@@ -118,6 +118,6 @@ void main()
 		Title = "Surface plotting";
 		Style = "pm3d";
 		View = [45, 45];
-		Plot(matrix, 10, 10, "cos(x) * sin(y)");
+		Plot(matrix, 10, 10, [0,0], [0,0], "cos(x) * sin(y)");
 	}
 }
