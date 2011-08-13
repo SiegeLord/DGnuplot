@@ -47,6 +47,7 @@ freely, subject to the following restrictions:
 module gnuplot;
 
 import tango.io.Stdout;
+import tango.io.device.File;
 import tango.sys.Process;
 
 import tango.core.Array;
@@ -108,22 +109,11 @@ class C3DPlot : CGNUPlot
 	 * See_Also:
 	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
 	 */
-	this()
+	this(char[] echo_filename = null)
 	{
+		super(echo_filename);
 		PlotStyle = "image";
 		PlotCommand = "splot";
-		View = null;
-	}
-
-	/**
-	 * See_Also:
-	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
-	 */
-	this(char[] term)
-	{
-		PlotStyle = "image";
-		PlotCommand = "splot";
-		super(term);
 		View = null;
 	}
 
@@ -333,21 +323,11 @@ class C2DPlot : CGNUPlot
 	 * See_Also:
 	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
 	 */
-	this()
+	this(char[] echo_filename = null)
 	{
+		super(echo_filename);
 		PlotStyle = "lines";
 		PlotCommand = "plot";
-	}
-
-	/**
-	 * See_Also:
-	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
-	 */
-	this(char[] term)
-	{
-		PlotStyle = "lines";
-		PlotCommand = "plot";
-		super(term);
 	}
 	
 	/**
@@ -483,24 +463,22 @@ class CGNUPlot
 
 	/**
 	 * Create a new plot instance using the default terminal.
-	 */
-	this()
-	{
-		GNUPlot = new Process(true, "gnuplot -persist");
-		GNUPlot.execute();
-		LayoutInst = new typeof(LayoutInst)();
-	}
-
-	/**
-	 * Create a new plot instance while specifying a different terminal type.
 	 *
 	 * Params:
-	 *     term = Terminal name. Notable options include: wxt, svg, png, pdfcairo, postscript.
+	 *     echo_filename = Filename to echo the commands to. If it is not null, then no other output will be produced.
 	 */
-	this(char[] term)
+	this(char[] echo_filename = null)
 	{
-		this();
-		Terminal = term;
+		if(echo_filename is null)
+		{
+			GNUPlot = new Process(true, "gnuplot -persist");
+			GNUPlot.execute();
+		}
+		else
+		{
+			EchoFile = new File(echo_filename, File.WriteCreate);
+		}
+		LayoutInst = new typeof(LayoutInst)();
 	}
 
 	/**
@@ -514,11 +492,23 @@ class CGNUPlot
 	 */
 	CGNUPlot opCall(char[] command)
 	{
-		with(GNUPlot.stdin)
+		if(GNUPlot !is null)
 		{
-			write(command);
-			write("\n");
-			flush();
+			with(GNUPlot.stdin)
+			{
+				write(command);
+				write("\n");
+				flush();
+			}
+		}
+		else
+		{
+			with(EchoFile)
+			{
+				write(command);
+				write("\n");
+				flush();
+			}
 		}
 
 		return this;
@@ -928,6 +918,7 @@ protected:
 	char[] PlotColor = "";
 
 	Process GNUPlot;
+	File EchoFile;
 	STextSink!(char) ArgsSink;
 	STextSink!(char) DataSink;
 	Layout!(char) LayoutInst;
