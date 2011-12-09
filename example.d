@@ -118,6 +118,7 @@ void main()
 		Title = "Surface plotting";
 		Style = "pm3d";
 		View = [45, 45];
+		Palette([[0.0, 0.0, 0.0, 1.0], [0.5, 0.5, 0.5, 0.5], [1.0, 1.0, 0.0, 0.0]]);
 		Plot(matrix, 10, 10, [0,0], [0,0], "cos(x) * sin(y)");
 	}
 }

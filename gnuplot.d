@@ -251,6 +251,76 @@ class C3DPlot : CGNUPlot
 
 		return this;
 	}
+	
+	/**
+	 * Set the palette by specifying colors directly. Expects an array of quads of doubles ranging from 0 to 1. The first 
+	 * entry specifies the gray level to map to a color. The last three entries specify the color using r, g and b components.
+	 *
+	 * Params:
+	 *     colormap = Quads of doubles.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
+	C3DPlot Palette(double[4][] colormap...)
+	{
+		size_t idx = 0;
+		
+		Palette((out double gray, out double r, out double g, out double b)
+		{
+			gray = colormap[idx][0];
+			r = colormap[idx][1];
+			g = colormap[idx][2];
+			b = colormap[idx][3];
+			idx++;
+			return idx < colormap.length;
+		});
+
+		return this;
+	}
+	
+	/**
+	 * Set the palette by specifying colors directly. Expects a delegate that fills out the passed quad of doubles ranging from 0
+	 * to 1. The first entry specifies the gray level to map to a color, and must increase at least every two iterations. 
+	 * The last three entries specify the color using r, g and b components. Iterations continues until the delegate returns false.
+	 *
+	 * Params:
+	 *     colormap = Colormap specifying delegate.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
+	C3DPlot Palette(bool delegate(out double gray, out double r, out double g, out double b) colormap)
+	{
+		ArgsSink.Size = 0;
+		
+		size_t num_done = 0;
+		
+		ArgsSink ~= "set palette defined (";
+		
+		while(true)
+		{
+			double gray, r, g, b;
+			
+			bool more = colormap(gray, r, g, b);
+			
+			if(num_done)
+				ArgsSink ~= ", ";
+
+			ArgsSink ~= Format("{:e6} {:e6} {:e6} {:e6}", gray, r, g, b);
+
+			num_done++;
+			
+			if(!more)
+				break;
+		}
+		
+		ArgsSink ~= ")";
+		if(num_done)
+			Command(ArgsSink[]);
+
+		return this;
+	}
 
 	/**
 	 * Plot a rectangular matrix of values.
