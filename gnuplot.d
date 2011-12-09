@@ -306,6 +306,18 @@ class C3DPlot : CGNUPlot
 			
 			if(num_done)
 				ArgsSink ~= ", ";
+			
+			void clamp(ref double v)
+			{
+				if(v < 0)
+					v = 0;
+				if(v > 1)
+					v = 1;
+			}
+			
+			clamp(r);
+			clamp(g);
+			clamp(b);
 
 			ArgsSink ~= Format("{:e6} {:e6} {:e6} {:e6}", gray, r, g, b);
 
