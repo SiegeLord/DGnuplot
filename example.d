@@ -3,6 +3,7 @@ module example;
 import gnuplot;
 import tango.math.Math;
 import tango.math.random.Random;
+import tango.core.ArrayLiteral : AL = ArrayLiteral;
 
 void main()
 {
@@ -102,15 +103,13 @@ void main()
 		}
 	}
 
-	double[2] arr = [0.0, 0.0];
-
 	/* An image plot */
 	auto plot4 = new C3DPlot;
 	with(plot4)
 	{
 		Title = "Image plotting";
 		Palette(23,28,3);
-		Plot(matrix, 10, 10, arr, arr, "cos(x) * sin(y)");
+		Plot(matrix, 10, 10, AL(0.0, 0.0), AL(0.0, 0.0), "cos(x) * sin(y)");
 	}
 
 	/* A surface plot */
@@ -121,6 +120,6 @@ void main()
 		Style = "pm3d";
 		View = [45, 45];
 		Palette([[0.0, 0.0, 0.0, 1.0], [0.5, 0.5, 0.5, 0.5], [1.0, 1.0, 0.0, 0.0]]);
-		Plot(matrix, 10, 10, arr, arr, "cos(x) * sin(y)");
+		Plot(matrix, 10, 10, AL(0.0, 0.0), AL(0.0, 0.0), "cos(x) * sin(y)");
 	}
 }

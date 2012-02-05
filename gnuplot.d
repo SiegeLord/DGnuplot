@@ -348,7 +348,7 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C3DPlot Plot(Data_t)(Data_t data, size_t w, size_t h, const(double)[2] true_xrange = [0,0], const(double)[2] true_yrange = [0,0], const(char)[] label = "")
+	C3DPlot Plot(Data_t)(Data_t data, size_t w, size_t h, double[2] true_xrange = [0,0], double[2] true_yrange = [0,0], const(char)[] label = "")
 	{
 		assert(w > 1 && h > 1, "Width and height must be greater than 1");
 		
