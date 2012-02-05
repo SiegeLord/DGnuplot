@@ -70,7 +70,7 @@ private struct STextSink(T)
 {
 	alias Sink opCatAssign;
 
-	uint Sink(T[] input)
+	size_t Sink(const(T)[] input)
 	{
 		auto len = input.length;
 		auto new_size = Size + len;
@@ -109,7 +109,7 @@ class C3DPlot : CGNUPlot
 	 * See_Also:
 	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
 	 */
-	this(char[] echo_filename = null)
+	this(const(char)[] echo_filename = null)
 	{
 		super(echo_filename);
 		PlotStyle = "image";
@@ -126,7 +126,7 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C3DPlot ZLabel(char[] label)
+	C3DPlot ZLabel(const(char)[] label)
 	{
 		Command(`set zlabel "` ~ label ~ `"`);
 		return this;
@@ -228,7 +228,7 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C3DPlot Palette(char[] pal)
+	C3DPlot Palette(const(char)[] pal)
 	{
 		Command("set palette " ~ pal);
 
@@ -348,7 +348,7 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C3DPlot Plot(Data_t)(Data_t data, size_t w, size_t h, double[2] true_xrange = [0,0], double[2] true_yrange = [0,0], char[] label = "")
+	C3DPlot Plot(Data_t)(Data_t data, size_t w, size_t h, const(double)[2] true_xrange = [0,0], const(double)[2] true_yrange = [0,0], const(char)[] label = "")
 	{
 		assert(w > 1 && h > 1, "Width and height must be greater than 1");
 		
@@ -405,7 +405,7 @@ class C2DPlot : CGNUPlot
 	 * See_Also:
 	 *     $(SYMLINK CGNUPlot.this, CGNUPlot.this)
 	 */
-	this(char[] echo_filename = null)
+	this(const(char)[] echo_filename = null)
 	{
 		super(echo_filename);
 		PlotStyle = "lines";
@@ -423,10 +423,12 @@ class C2DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C2DPlot Histogram(Data_t)(Data_t data, size_t num_bins = 10, char[] label = "")
+	C2DPlot Histogram(Data_t)(Data_t data, size_t num_bins = 10, const(char)[] label = "")
 	{
 		static assert(IsArray!(Data_t), "Can't make a histogram of something that isn't an array type");
 		assert(num_bins > 0, "Must have at least 2 bins");
+		
+		alias typeof(data[0]) Elem_t;
 		
 		auto min_val = data[0];
 		auto max_val = data[0];
@@ -440,10 +442,10 @@ class C2DPlot : CGNUPlot
 		}
 		
 		auto bins = new size_t[](num_bins);
-		auto cats = new typeof(min_val)[](num_bins);
+		auto cats = new Elem_t[](num_bins);
 		
 		foreach(idx, ref x; cats)
-			x = idx * (max_val - min_val) / (num_bins - 1) + min_val;
+			x = cast(Elem_t)(idx * (max_val - min_val) / (num_bins - 1) + min_val);
 		
 		size_t max_bin = 0;
 		
@@ -480,7 +482,7 @@ class C2DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C2DPlot Plot(X_t, Y_t)(X_t X, Y_t Y, char[] label = "")
+	C2DPlot Plot(X_t, Y_t)(X_t X, Y_t Y, const(char)[] label = "")
 	{
 		const x_arr = IsArray!(X_t);
 		const y_arr = IsArray!(Y_t);
@@ -549,7 +551,7 @@ class CGNUPlot
 	 * Params:
 	 *     echo_filename = Filename to echo the commands to. If it is not null, then no other output will be produced.
 	 */
-	this(char[] echo_filename = null)
+	this(const(char)[] echo_filename = null)
 	{
 		if(echo_filename is null)
 		{
@@ -572,7 +574,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	CGNUPlot opCall(char[] command)
+	CGNUPlot opCall(const(char)[] command)
 	{
 		if(GNUPlot !is null)
 		{
@@ -609,11 +611,11 @@ class CGNUPlot
 	 * Returns:
 	 *     A string containing the errors.
 	 */
-	char[] GetErrors(int timeout = 100)
+	const(char)[] GetErrors(int timeout = 100)
 	{
 		version(linux)
 		{
-			char[] ret;
+			const(char)[] ret;
 
 			pollfd fd;
 			fd.fd = GNUPlot.stderr.fileHandle;
@@ -622,7 +624,7 @@ class CGNUPlot
 			while(poll(&fd, 1, timeout) > 0)
 			{
 				char[1024] buf;
-				int len = GNUPlot.stderr.read(buf);
+				auto len = GNUPlot.stderr.read(buf);
 				if(len > 0)
 					ret ~= buf[0..len];
 			}
@@ -651,7 +653,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	CGNUPlot PlotRaw(char[] args, char[] data = null)
+	CGNUPlot PlotRaw(const(char)[] args, const(char)[] data = null)
 	{
 		if(Holding && PlotArgs.length != 0)
 		{
@@ -741,7 +743,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	CGNUPlot XLabel(char[] label)
+	CGNUPlot XLabel(const(char)[] label)
 	{
 		return Command(`set xlabel "` ~ label ~ `"`);
 	}
@@ -755,7 +757,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	CGNUPlot YLabel(char[] label)
+	CGNUPlot YLabel(const(char)[] label)
 	{
 		return Command(`set ylabel "` ~ label ~ `"`);
 	}
@@ -849,7 +851,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	CGNUPlot Title(char[] title)
+	CGNUPlot Title(const(char)[] title)
 	{
 		return Command(`set title "` ~ title ~ `"`);
 	}
@@ -874,7 +876,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	CGNUPlot Style(char[] style)
+	CGNUPlot Style(const(char)[] style)
 	{
 		PlotStyle = style;
 		StyleHasPoints = PlotStyle.length != PlotStyle.find("points");
@@ -932,10 +934,23 @@ class CGNUPlot
 	 */
 	CGNUPlot Color(int[3] color...)
 	{
-		if(color is null)
-			PlotColor = "";
-		else
-			PlotColor = Format("#{:x2}{:x2}{:x2}", color[0], color[1], color[2]);
+		PlotColor = Format("#{:x2}{:x2}{:x2}", color[0], color[1], color[2]);
+		return this;
+	}
+	
+		/**
+	 * Set the color of points/lines for subsequent plot commands.
+	 *
+	 * Params:
+	 *     color = Triplet of values specifying the red, green and blue components
+	 *             of the color. Each component ranges between 0 and 255.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
+	CGNUPlot Color()
+	{
+		PlotColor = "";
 		return this;
 	}
 
@@ -963,7 +978,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	CGNUPlot OutputFile(char[] filename)
+	CGNUPlot OutputFile(const(char)[] filename)
 	{
 		return Command(Format(`set output "{}"`, filename));
 	}
@@ -974,7 +989,7 @@ class CGNUPlot
 	 * Params:
 	 *     term = Terminal name. Notable options include: wxt, svg, png, pdfcairo, postscript.
 	 */
-	CGNUPlot Terminal(char[] term)
+	CGNUPlot Terminal(const(char)[] term)
 	{
 		return Command("set term " ~ term);
 	}
@@ -988,16 +1003,16 @@ protected:
 			ArgsSink ~= ` pt ` ~ PlotPointType;
 	}
 
-	char[] PlotStyle = "lines";
+	const(char)[] PlotStyle = "lines";
 
 	bool Holding = false;
-	char[] PlotCommand = "plot";
-	char[] PlotArgs;
-	char[] PlotData;
+	const(char)[] PlotCommand = "plot";
+	const(char)[] PlotArgs;
+	const(char)[] PlotData;
 	bool StyleHasPoints = false;
-	char[] PlotThickness = "1";
-	char[] PlotPointType = "0";
-	char[] PlotColor = "";
+	const(char)[] PlotThickness = "1";
+	const(char)[] PlotPointType = "0";
+	const(char)[] PlotColor = "";
 
 	Process GNUPlot;
 	File EchoFile;
