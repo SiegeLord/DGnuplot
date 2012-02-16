@@ -938,7 +938,7 @@ class CGNUPlot
 		return this;
 	}
 	
-		/**
+	/**
 	 * Set the color of points/lines for subsequent plot commands.
 	 *
 	 * Params:
