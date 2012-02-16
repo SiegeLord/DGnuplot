@@ -290,7 +290,7 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C3DPlot Palette(bool delegate(out double gray, out double r, out double g, out double b) colormap)
+	C3DPlot Palette(scope bool delegate(out double gray, out double r, out double g, out double b) colormap)
 	{
 		ArgsSink.Size = 0;
 		
