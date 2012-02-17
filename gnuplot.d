@@ -126,6 +126,7 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	C3DPlot ZLabel(const(char)[] label)
 	{
 		Command(`set zlabel "` ~ label ~ `"`);
@@ -142,6 +143,7 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	C3DPlot ZRange(double[] range)
 	{
 		if(range !is null)
@@ -165,6 +167,7 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	C3DPlot CRange(double[] range)
 	{
 		if(range !is null)
@@ -209,6 +212,7 @@ class C3DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	C3DPlot View(double[] x_z_rot)
 	{
 		if(x_z_rot is null)
@@ -704,6 +708,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot Hold(bool hold)
 	{
 		Holding = hold;
@@ -743,6 +748,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot XLabel(const(char)[] label)
 	{
 		return Command(`set xlabel "` ~ label ~ `"`);
@@ -757,6 +763,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot YLabel(const(char)[] label)
 	{
 		return Command(`set ylabel "` ~ label ~ `"`);
@@ -772,6 +779,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot XRange(double[] range)
 	{
 		if(range !is null)
@@ -793,6 +801,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot YRange(double[] range)
 	{
 		if(range !is null)
@@ -851,6 +860,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot Title(const(char)[] title)
 	{
 		return Command(`set title "` ~ title ~ `"`);
@@ -876,6 +886,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot Style(const(char)[] style)
 	{
 		PlotStyle = style;
@@ -894,6 +905,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot PointType(int type)
 	{
 		if(type < 0)
@@ -913,6 +925,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot Thickness(float thickness)
 	{
 		assert(thickness >= 0);
@@ -963,6 +976,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot AspectRatio(double ratio)
 	{
 		return Command(Format("set size ratio {}", ratio));
@@ -978,6 +992,7 @@ class CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
+	@property
 	CGNUPlot OutputFile(const(char)[] filename)
 	{
 		return Command(Format(`set output "{}"`, filename));
@@ -989,6 +1004,7 @@ class CGNUPlot
 	 * Params:
 	 *     term = Terminal name. Notable options include: wxt, svg, png, pdfcairo, postscript.
 	 */
+	@property
 	CGNUPlot Terminal(const(char)[] term)
 	{
 		return Command("set term " ~ term);
