@@ -405,7 +405,7 @@ class C3DPlot : CGNUPlot
 					auto z = data;
 
 				UDoubler doubler;
-				doubler.Value = z;
+				doubler.Value = cast(double)z;
 				DataSink.Sink(doubler.Chars[]);
 			}
 		}
@@ -541,9 +541,9 @@ class C2DPlot : CGNUPlot
 				auto y = Y;
 			
 			UDoubler doubler;
-			doubler.Value = x;
+			doubler.Value = cast(double)x;
 			DataSink.Sink(doubler.Chars[]);
-			doubler.Value = y;
+			doubler.Value = cast(double)y;
 			DataSink.Sink(doubler.Chars[]);
 		}
 
