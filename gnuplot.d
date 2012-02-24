@@ -100,6 +100,12 @@ private struct STextSink(T)
 	size_t Size = 0;
 }
 
+private union UDoubler
+{
+	char[double.sizeof] Chars;
+	double Value;
+}
+
 /**
  * A 3D data plotter.
  */
@@ -362,18 +368,30 @@ class C3DPlot : CGNUPlot
 
 		ArgsSink.Size = 0;
 		DataSink.Size = 0;
-		DataSink.Reserve(w * h * 15);
+		DataSink.Reserve(w * h * 8);
 
-		ArgsSink ~= `"-" matrix using `;
+		ArgsSink ~= Format(`"-" binary array=({},{}) format="%float64" `, w, h);
+		double origin_x = 0;
+		double origin_y = 0;
 		if(true_xrange[0] != true_xrange[1])
-			ArgsSink ~= Format("({:e6} + {:e6} * $1):", true_xrange[0], (true_xrange[1] - true_xrange[0]) / (w - 1));
+		{
+			ArgsSink ~= Format("dx={:e6} ", (true_xrange[1] - true_xrange[0]) / (w - 1));
+			origin_x = true_xrange[0];
+		}
 		else
-			ArgsSink ~= `1:`;
+		{
+			ArgsSink ~= "dx=1 ";
+		}
 		if(true_yrange[0] != true_yrange[1])
-			ArgsSink ~= Format("({:e6} + {:e6} * $2):", true_yrange[0], (true_yrange[1] - true_yrange[0]) / (h - 1));
+		{
+			ArgsSink ~= Format("dy={:e6} ", (true_yrange[1] - true_yrange[0]) / (h - 1));
+			origin_y = true_yrange[0];
+		}
 		else
-			ArgsSink ~= `2:`;
-		ArgsSink ~= `3`;
+		{
+			ArgsSink ~= "dy=1 ";
+		}
+		ArgsSink ~= Format(" origin=({:e6},{:e6},0)", origin_x, origin_y);
 
 		ArgsSink ~= ` title "` ~ label ~ `" with ` ~ PlotStyle;
 		AppendExtraStyleStr();
@@ -387,12 +405,11 @@ class C3DPlot : CGNUPlot
 				else
 					auto z = data;
 
-				LayoutInst.convert(&DataSink.Sink, "{:e6} ", cast(double)z);
+				UDoubler doubler;
+				doubler.Value = z;
+				DataSink.Sink(doubler.Chars[]);
 			}
-			DataSink ~= "\n";
 		}
-
-		DataSink ~= "e\ne\n";
 
 		PlotRaw(ArgsSink[], DataSink[]);
 
@@ -505,9 +522,9 @@ class C2DPlot : CGNUPlot
 
 		ArgsSink.Size = 0;
 		DataSink.Size = 0;
-		DataSink.Reserve(len * 15);
+		DataSink.Reserve(len * 16);
 
-		ArgsSink ~= `"-"`;
+		ArgsSink ~= Format(`"-" binary record={} format="%float64"`, len);
 		ArgsSink ~= ` title "` ~ label ~ `"`;
 		ArgsSink ~= " with " ~ PlotStyle;
 		AppendExtraStyleStr();
@@ -523,10 +540,13 @@ class C2DPlot : CGNUPlot
 				auto y = Y[ii];
 			else
 				auto y = Y;
-
-			LayoutInst.convert(&DataSink.Sink, "{:e6}\t{:e6}\n", cast(double)x, cast(double)y);
+			
+			UDoubler doubler;
+			doubler.Value = x;
+			DataSink.Sink(doubler.Chars[]);
+			doubler.Value = y;
+			DataSink.Sink(doubler.Chars[]);
 		}
-		DataSink ~= "e\n";
 
 		PlotRaw(ArgsSink[], DataSink[]);
 
