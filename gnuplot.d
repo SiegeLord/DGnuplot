@@ -54,7 +54,6 @@ import tango.core.Array;
 import tango.math.Math;
 
 import tango.text.convert.Format;
-import tango.text.convert.Layout;
 
 version(linux)
 {
@@ -586,7 +585,6 @@ class CGNUPlot
 		{
 			EchoFile = new File(echo_filename, File.WriteCreate);
 		}
-		LayoutInst = new typeof(LayoutInst)();
 	}
 
 	/**
@@ -1054,5 +1052,4 @@ protected:
 	File EchoFile;
 	STextSink!(char) ArgsSink;
 	STextSink!(char) DataSink;
-	Layout!(char) LayoutInst;
 }
