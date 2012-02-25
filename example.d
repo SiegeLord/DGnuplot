@@ -122,4 +122,12 @@ void main()
 		Palette([[0.0, 0.0, 0.0, 1.0], [0.5, 0.5, 0.5, 0.5], [1.0, 1.0, 0.0, 0.0]]);
 		Plot(matrix, 10, 10, AL(0.0, 0.0), AL(0.0, 0.0), "cos(x) * sin(y)");
 	}
+	
+	/* Linear X plot */
+	auto plot6 = new C2DPlot;
+	with(plot6)
+	{
+		Title = "Linear X";
+		PlotLinearX(Y2, AL(0.0, 1.0), "sin(x)");
+	}
 }

@@ -62,7 +62,7 @@ version(linux)
 
 private template IsArray(T)
 {
-	const IsArray = is(typeof(T.length)) && is(typeof(T[0]));
+	enum IsArray = is(typeof(T.length)) && is(typeof(T[0]));
 }
 
 private struct STextSink(T)
@@ -361,7 +361,7 @@ class C3DPlot : CGNUPlot
 	{
 		assert(w > 1 && h > 1, "Width and height must be greater than 1");
 		
-		const arr = IsArray!(Data_t);
+		enum arr = IsArray!(Data_t);
 		static if(arr)
 			assert(data.length == w * h, "Width and height don't match the size of the data array");
 
@@ -490,6 +490,48 @@ class C2DPlot : CGNUPlot
 			Command(`set style fill solid border rgbcolor "black"`);
 		return Plot(cats, bins, label);
 	}
+	
+	/* Outside due to a LDC bug: */
+	private struct SDXArray
+	{
+		double opIndex(size_t idx)
+		{
+			if(length < 2)
+				return x_range[0];
+			else
+				return x_range[0] + idx * (x_range[1] - x_range[0]) / (length - 1);
+		}
+		
+		size_t length;
+		double[2] x_range;
+	}
+	
+	/**
+	 * Plot an array vs a linear abscissa.
+	 *
+	 * Params:
+	 *     Y = Array of Y coordinate data or a numerical constant.
+	 *     x_range = Range of X values to assign to each value of Y. If the range is empty, the index of the value is used.
+	 *     label = Label text to use for this curve.
+	 *
+	 * Returns:
+	 *     Reference to this instance.
+	 */
+	C2DPlot PlotLinearX(Y_t)(Y_t Y, double[2] x_range = [0, 0], const(char)[] label = "")
+	{
+		static if(IsArray!(Y_t))
+			auto len = Y.length;
+		else
+			auto len = 1;
+		
+		if(x_range[0] == x_range[1])
+		{
+			x_range[0] = 0;
+			x_range[1] = len;
+		}
+		
+		return Plot(SDXArray(len, x_range), Y, label);
+	}
 
 	/**
 	 * Plot a pair of arrays. Arrays must have the same size.
@@ -504,8 +546,8 @@ class C2DPlot : CGNUPlot
 	 */
 	C2DPlot Plot(X_t, Y_t)(X_t X, Y_t Y, const(char)[] label = "")
 	{
-		const x_arr = IsArray!(X_t);
-		const y_arr = IsArray!(Y_t);
+		enum x_arr = IsArray!(X_t);
+		enum y_arr = IsArray!(Y_t);
 		
 		size_t len;
 		
