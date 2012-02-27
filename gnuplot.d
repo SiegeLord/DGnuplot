@@ -433,7 +433,7 @@ class C2DPlot : CGNUPlot
 	}
 	
 	/**
-	 * Plot a histogram of some data.
+	 * Plot a histogram of some data. You probably want to set Style to "boxes" for this to look nice.
 	 *
 	 * Params:
 	 *     data = Array of data.
