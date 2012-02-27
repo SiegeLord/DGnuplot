@@ -487,7 +487,7 @@ class C2DPlot : CGNUPlot
 		
 		YRange = [0, max_bin + 1];
 		if(PlotStyle == "boxes")
-			Command(`set style fill solid border rgbcolor "black"`);
+			Command(`set style fill solid border lc rgbcolor "black"`);
 		return Plot(cats, bins, label);
 	}
 	
