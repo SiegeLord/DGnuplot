@@ -729,7 +729,7 @@ function reportBug()
   // TODO: implement.
 }
 
-tab key. We can still make an element focusable with a value of -1.
+// tab key. We can still make an element focusable with a value of -1.
     // Hope this gets fixed in Opera 10.
     this.ul.tabIndex = -1; // Make focusable but prevent tabbing.
 
