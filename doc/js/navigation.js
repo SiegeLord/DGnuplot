@@ -455,7 +455,7 @@ var app = {
   setTimeout(function() {
     ul.parent()[0].scrollTop = kandil.save.symbols_sb();
   });
-  app.installTooltipHandlers();
+  //app.installTooltipHandlers();
 },
 
   /// Loads a new module and updates the content pane.
