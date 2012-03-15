@@ -369,7 +369,10 @@ class C3DPlot : CGNUPlot
 		DataSink.Size = 0;
 		DataSink.Reserve(w * h * 8);
 
-		ArgsSink ~= Format(`"-" binary array=({},{}) format="%float64" `, w, h);
+		version(LittleEndian)
+			ArgsSink ~= Format(`"-" binary endian=little array=({},{}) format="%float64" `, w, h);
+		else
+			ArgsSink ~= Format(`"-" binary endian=big array=({},{}) format="%float64" `, w, h);
 		double origin_x = 0;
 		double origin_y = 0;
 		if(true_xrange[0] != true_xrange[1])
@@ -565,7 +568,11 @@ class C2DPlot : CGNUPlot
 		DataSink.Size = 0;
 		DataSink.Reserve(len * 16);
 
-		ArgsSink ~= Format(`"-" binary record={} format="%float64"`, len);
+		version(LittleEndian)
+			ArgsSink ~= Format(`"-" binary endian=little record={} format="%float64"`, len);
+		else
+			ArgsSink ~= Format(`"-" binary endian=big record={} format="%float64"`, len);
+
 		ArgsSink ~= ` title "` ~ label ~ `"`;
 		ArgsSink ~= " with " ~ PlotStyle;
 		AppendExtraStyleStr();
