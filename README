@@ -15,7 +15,7 @@ with(plot)
     PlotRaw("x*x*x");
 }
 
-It was tested on Linux 64 bit with Tango D2 trunk and gnuplot 4.4. It'll probably work with other versions of gnuplot as well. I'm not sure how well it will work on Windows.
+It was tested on Linux 64 bit with Tango D2 trunk and gnuplot 4.4. It'll probably work with other versions of gnuplot as well. It works ok on Windows with the following caveat: the plot windows will close if the main program closes also. If you want interactive plots to remain, you need to keep your main program alive as well (see example.d for one solution). This is a limitation of gnuplot and Windows in general.
 
 It does not use temporary files to transfer data to gnuplot, instead using inline text entry. This probably makes it faster than similar controllers.
 

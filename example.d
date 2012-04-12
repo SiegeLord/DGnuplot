@@ -4,6 +4,7 @@ import gnuplot;
 import tango.math.Math;
 import tango.math.random.Random;
 import tango.core.ArrayLiteral : AL = ArrayLiteral;
+import tango.io.Console;
 
 void main()
 {
@@ -129,5 +130,13 @@ void main()
 	{
 		Title = "Linear X";
 		PlotLinearX(Y2, AL(0.0, 1.0), "sin(x)");
+	}
+	
+	version(Windows)
+	{
+		/* Gnuplot needs the main process alive for the plots to remain */
+		Cout("Press ENTER to quit...").newline;
+		char[] ret;
+		Cin.readln(ret);
 	}
 }
