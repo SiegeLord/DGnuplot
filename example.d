@@ -140,7 +140,7 @@ void main()
 		Style = "errorbars";
 		Hold = true;
 		Plot(X, Y1, 3, "sin(x)");
-		Plot(X, Y2, Y1, Y2, "x^2");
+		Plot(X, Y2, Y1, Y2);
 		Hold = false;
 	}
 	

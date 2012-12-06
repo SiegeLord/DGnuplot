@@ -561,6 +561,11 @@ class C2DPlot : CGNUPlot
 		AppendExtraStyleStr();
 	}
 
+	C2DPlot Plot(TDataTuple...)(TDataTuple data) if(!is(TDataTuple[$-1] : const(char)[]))
+	{
+		return Plot(data, "");
+	}
+	
 	/**
 	 * Plot a set of arrays or constants. Arrays must have the same size.
 	 *
@@ -571,7 +576,7 @@ class C2DPlot : CGNUPlot
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C2DPlot Plot(TDataTuple...)(TDataTuple data, const(char)[] label = "")
+	C2DPlot Plot(TDataTuple...)(TDataTuple data, const(char)[] label)
 	{
 		ptrdiff_t len = -1;
 		
