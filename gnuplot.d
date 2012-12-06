@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2011 Pavel Sountsov
+Copyright (c) 2010-2012 Pavel Sountsov
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -535,65 +535,79 @@ class C2DPlot : CGNUPlot
 		
 		return Plot(SDXArray(len, x_range), Y, label);
 	}
+	
+	private void PlotCommon(size_t data_length, size_t num_columns, const(char)[] label)
+	{
+		ArgsSink.Size = 0;
+		DataSink.Size = 0;
+		DataSink.Reserve(data_length * 8 * num_columns);
+
+		ArgsSink ~= `"-" binary endian=`;
+		version(LittleEndian)
+			ArgsSink ~= "little";
+		else
+			ArgsSink ~= "big";
+		ArgsSink ~= Format(` record={} format="%float64" using `, data_length);
+		
+		foreach(ii; 0..num_columns)
+		{
+			ArgsSink ~= Format("{}", ii + 1);
+			if(ii + 1 < num_columns)
+				ArgsSink ~= ":";
+		}
+
+		ArgsSink ~= ` title "` ~ label ~ `"`;
+		ArgsSink ~= " with " ~ PlotStyle;
+		AppendExtraStyleStr();
+	}
 
 	/**
-	 * Plot a pair of arrays. Arrays must have the same size.
+	 * Plot a set of arrays or constants. Arrays must have the same size.
 	 *
 	 * Params:
-	 *     X = Array of X coordinate data or a numerical constant.
-	 *     Y = Array of Y coordinate data or a numerical constant.
+	 *     data = Set of arrays (or numerical constants) to plot.
 	 *     label = Label text to use for this curve.
 	 *
 	 * Returns:
 	 *     Reference to this instance.
 	 */
-	C2DPlot Plot(X_t, Y_t)(X_t X, Y_t Y, const(char)[] label = "")
+	C2DPlot Plot(TDataTuple...)(TDataTuple data, const(char)[] label = "")
 	{
-		enum x_arr = IsArray!(X_t);
-		enum y_arr = IsArray!(Y_t);
+		ptrdiff_t len = -1;
 		
-		size_t len;
-		
-		static if(x_arr && y_arr)
-			assert(X.length == Y.length, "Arrays must be of equal length to plot.");
-		
-		static if(x_arr)
-			len = X.length;
-		else static if(y_arr)
-			len = Y.length;
-		else
+		foreach(idx, array; data)
+		{
+			static if(IsArray!(TDataTuple[idx]))
+			{
+				if(len == -1)
+					len = array.length;
+				else if(array.length != len)
+					assert(0, "All arrays must be of equal lengths to plot.");
+			}
+		}
+
+		if(len == -1)
 			len = 1;
 
-		ArgsSink.Size = 0;
-		DataSink.Size = 0;
-		DataSink.Reserve(len * 16);
-
-		version(LittleEndian)
-			ArgsSink ~= Format(`"-" binary endian=little record={} format="%float64"`, len);
-		else
-			ArgsSink ~= Format(`"-" binary endian=big record={} format="%float64"`, len);
-
-		ArgsSink ~= ` title "` ~ label ~ `"`;
-		ArgsSink ~= " with " ~ PlotStyle;
-		AppendExtraStyleStr();
+		PlotCommon(len, data.length, label);
 		
 		for(size_t ii = 0; ii < len; ii++)
 		{
-			static if(x_arr)
-				auto x = X[ii];
-			else
-				auto x = X;
-
-			static if(y_arr)
-				auto y = Y[ii];
-			else
-				auto y = Y;
-			
 			UDoubler doubler;
-			doubler.Value = cast(double)x;
-			DataSink.Sink(doubler.Chars[]);
-			doubler.Value = cast(double)y;
-			DataSink.Sink(doubler.Chars[]);
+			
+			foreach(idx, array; data)
+			{
+				static if(IsArray!(TDataTuple[idx]))
+				{
+					doubler.Value = cast(double)array[ii];
+					DataSink.Sink(doubler.Chars[]);
+				}
+				else
+				{
+					doubler.Value = cast(double)array;
+					DataSink.Sink(doubler.Chars[]);
+				}
+			}
 		}
 
 		PlotRaw(ArgsSink[], DataSink[]);

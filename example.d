@@ -8,9 +8,9 @@ import tango.io.Console;
 
 void main()
 {
-	auto X = new double[](1000);
-	auto Y1 = new double[](1000);
-	auto Y2 = new double[](1000);
+	auto X = new double[](100);
+	auto Y1 = new double[](100);
+	auto Y2 = new double[](100);
 
 	foreach(ii, ref x; X)
 	{
@@ -95,12 +95,12 @@ void main()
 		Refresh();
 	}
 
-	auto matrix = new double[](10*10);
-	for(int y = 0; y < 10; y++)
+	auto matrix = new double[](50*50);
+	for(int y = 0; y < 50; y++)
 	{
-		for(int x = 0; x < 10; x++)
+		for(int x = 0; x < 50; x++)
 		{
-			matrix[y * 10 + x] = cos(x) * sin(y);
+			matrix[y * 50 + x] = cos(cast(double)x / 5) * sin(cast(double)y / 5);
 		}
 	}
 
@@ -110,7 +110,7 @@ void main()
 	{
 		Title = "Image plotting";
 		Palette(23,28,3);
-		Plot(matrix, 10, 10, AL(0.0, 0.0), AL(0.0, 0.0), "cos(x) * sin(y)");
+		Plot(matrix, 50, 50, AL(0.0, 0.0), AL(0.0, 0.0), "cos(x) * sin(y)");
 	}
 
 	/* A surface plot */
@@ -121,7 +121,7 @@ void main()
 		Style = "pm3d";
 		View = [45, 45];
 		Palette([[0.0, 0.0, 0.0, 1.0], [0.5, 0.5, 0.5, 0.5], [1.0, 1.0, 0.0, 0.0]]);
-		Plot(matrix, 10, 10, AL(0.0, 0.0), AL(0.0, 0.0), "cos(x) * sin(y)");
+		Plot(matrix, 50, 50, AL(0.0, 0.0), AL(0.0, 0.0), "cos(x) * sin(y)");
 	}
 	
 	/* Linear X plot */
@@ -130,6 +130,18 @@ void main()
 	{
 		Title = "Linear X";
 		PlotLinearX(Y2, AL(0.0, 1.0), "sin(x)");
+	}
+	
+	/* Plot with errors */
+	auto plot7 = new C2DPlot;
+	with(plot7)
+	{
+		Title = "Error bar plot";
+		Style = "errorbars";
+		Hold = true;
+		Plot(X, Y1, 3, "sin(x)");
+		Plot(X, Y2, Y1, Y2, "x^2");
+		Hold = false;
 	}
 	
 	version(Windows)
