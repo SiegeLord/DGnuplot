@@ -62,7 +62,7 @@ version(linux)
 
 private template IsArray(T)
 {
-	enum IsArray = is(typeof(T.length)) && is(typeof(T[0]));
+	enum IsArray = is(typeof(T.length)) && is(typeof(T.init[0]));
 }
 
 private struct STextSink(T)
