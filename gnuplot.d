@@ -976,7 +976,7 @@ class CGNUPlot
 	CGNUPlot Style(const(char)[] style)
 	{
 		PlotStyle = style;
-		StyleHasPoints = PlotStyle.length != PlotStyle.find("points");
+		StyleHasPoints = PlotStyle.length != PlotStyle.find("points") || PlotStyle == "errorlines";
 		
 		return this;
 	}
